@@ -1,0 +1,11 @@
+.git
+
+/db/
+*.db
+
+/log/
+*.log
+
+
+/.idea/
+.idea
