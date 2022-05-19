@@ -23,6 +23,8 @@ const TITLE_LOGIN             = 'Login';
 const FORM_ACTION             = 'index.php';
 const DASHBOARD               = 'main.php';
 CONST CAT_URL_PREFIX          = 'cat';
+const CAT_MAX_CHARS           = 20;
+const FORBIDDEN_CHAR_DELIMITER="#";
 
 const OKAY                    = '1';
 const NOKAY                   = '0';
@@ -69,6 +71,7 @@ const PARAM_URL               = ":url";
 const PARAM_TAGS              = ":tags";
 const PARAM_BOOKMARKID        = ":bookmarkid";
 const PARAM_TOKEN             = ":token";
+const PARAM_FORBIDDEN_CHARS   = "PARAM_FORBIDDEN_CHARS";
 
 
 const PARAM_REGISTER_WARNING  = "SHOW_REGISTER_WARNING";
