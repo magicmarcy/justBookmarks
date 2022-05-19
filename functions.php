@@ -290,6 +290,27 @@ function getParameterBoolean($parametername, $userid): bool {
   return $result;
 }
 
+function hasForbiddenCharsInCategoryname(string $category): bool {
+  $paramForbiddenChars = getParameter(PARAM_FORBIDDEN_CHARS, NO_USER);
+
+  Logger::trace("hasForbiddenCharsInCategoryname(): PARAMETER PARAM_FORBIDDEN_CHARS=" . $paramForbiddenChars);
+
+  $chars = explode(FORBIDDEN_CHAR_DELIMITER, $paramForbiddenChars);
+
+  if (isset($chars)) {
+    foreach ($chars as $char) {
+      Logger::trace("hasForbiddenCharsInCategoryname(): Pruefe auf Vorkommen von: " . $char);
+
+      if (isset($char) && !empty($char) && str_contains($category, $char)) {
+        Logger::trace("hasForbiddenCharsInCategoryname(): Verbotenes Zeichen <" . $char . "> in <" . $category . "> gefunden");
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 function categoryExists($categoryName, $userid): bool {
   Logger::trace('categoryExists(): Enter -> CATEGORY=' . $categoryName . ' USERID=' . $userid);
 
@@ -301,9 +322,10 @@ function categoryExists($categoryName, $userid): bool {
   }
 
   $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
-  $sql = "SELECT ID, NAME, USERID, COLOR FROM CATEGORY WHERE NAME = :catName AND USERID = :userid";
+  $sql = "SELECT ID, NAME, USERID, COLOR FROM CATEGORY WHERE LOWER(NAME) = :catName AND USERID = :userid";
   $stmt = $db -> prepare($sql);
-  $stmt -> bindParam(PARAM_CATNAME, $categoryName);
+  $catInLowerCase = strtolower($categoryName);
+  $stmt -> bindParam(PARAM_CATNAME, $catInLowerCase);
   $stmt -> bindParam(PARAM_USERID, $userid);
 
   Logger::trace('categoryExists(): Folgender SQL wird ausgefuehrt: ' . $sql);
@@ -329,9 +351,13 @@ function validateCategory($category, $userid): bool {
     Logger::trace("validateCategory(): Kategorie darf nicht leer sein!");
     echo '<div id="alert" class="alert alert-danger" role="alert">Du musst einen Kategorienamen angeben!</div>';
     return false;
-  } else if (containsForbiddenChars($category)) {
+  } else if (hasForbiddenCharsInCategoryname($category)) {
     Logger::trace("validateCategory(): Verbotene Zeichen enthalten");
-    echo '<div id="alert" class="alert alert-danger" role="alert">Der Kategoriename darf keine Sonder- oder Leerzeichenenthalten!</div>';
+    echo '<div id="alert" class="alert alert-danger" role="alert">Der Kategoriename darf keine Sonderzeichen enthalten!</div>';
+    return false;
+  } else if (strlen($category) > CAT_MAX_CHARS) {
+    Logger::trace("validateCategory(): Kategoriename ist zu lang! +++ Achtung! +++ Vermutlich Request-Manipulation!!!!");
+    echo '<div id="alert" class="alert alert-danger" role="alert">Der Kategoriename darf nur ' . CAT_MAX_CHARS . ' Zeichen enthalten!</div>';
     return false;
   } else if (strtolower($category) == 'default') {
     Logger::trace("validateCategory(): Kategorie darf nicht default heissen!");
