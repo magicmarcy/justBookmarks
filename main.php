@@ -258,6 +258,13 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
     </div>
     </form>
 
+    <div class="user-panel">
+      <div class="user-icon-box">
+        <div class="user-icon"><i class="fa-solid fa-user"></i></div>
+        <div class="user-welcome-text">Hallo, <?php echo $userdata['NAME'];?>!</div>
+      </div>
+    </div>
+
   </div>
   <div class="category-bookmarks">
     <ul>
