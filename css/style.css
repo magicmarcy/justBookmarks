@@ -473,3 +473,33 @@ html body {
 .impressum-box, .datenschutz-box, .about-box {
     padding-right: 15px;
 }
+
+.user-panel {
+    float:right;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.user-icon-box {
+    height: 50px;
+    width: 50px;
+    border-radius: 25px;
+    background-color: #16374d;
+    margin: 15px 15px 0 0;
+    text-align: center;
+    padding: 5px 0 0 0;
+}
+
+.user-icon {
+    font-size: 24px;
+    color: white;
+}
+
+.user-welcome-text {
+    float: right;
+    width: 200px;
+    padding: 0;
+    text-align: right;
+    margin: -27px 60px 0 0;
+}
