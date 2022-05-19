@@ -6,6 +6,8 @@ const PROJECTVERSION          = "0.5.325";
 const PROJECTSHORTDESC        = PROJECTNAME . " | Deine Bookmarks, überall verfügbar, in jedem Browser!";
 const PROJECTLONGDESC         = PROJECTNAME . " ist ein einzigartiger Bookmarking-Dienst.";
 
+const BUYMEACOFFEELINK        = "https://buymeacoff.ee/magicmarcy";
+
 const SESSION_COOKIE_LIFETIME = 2592000; // 30 Tage (60 * 60 * 24 * 30)
 const ALERT_TIMEOUT           = 5000;
 
@@ -45,6 +47,11 @@ const SHOW_PROFILE_TAB        = "SHOW_PROFILE_TAB";
 const SHOW_TAG_TAB            = "SHOW_TAG_TAB";
 const BASETARGET              = "BASETARGET";
 const REGISTRATION_ALLOWED    = "REGISTRATION_ALLOWED";
+const SHOW_FOOTER             = "SHOW_FOOTER";
+const SHOW_DONO_LINK          = "SHOW_DONO_LINK";
+const SHOW_ABOUT_LINK         = "SHOW_ABOUT_LINK";
+const SHOW_DATENSCHUTZ_LINK   = "SHOW_DATENSCHUTZ_LINK";
+const SHOW_IMPRESSUM_LINK     = "SHOW_IMPRESSUM_LINK";
 
 const NO_USER                 = "0";
 

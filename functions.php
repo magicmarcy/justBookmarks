@@ -222,6 +222,7 @@ function console($msg) {
 /**
  * wenn ein Parameter mit UserID vorliegt, gilt der auch nur fuer den entsprechenden User
  * ist ein Parameter mit der UserID = 0 angelegt, gilt der Parameter fuer ALLE User
+ * Ist ein Parameter gar nicht angelegt, gilt er auch nicht ;-)
  *
  * @param $parametername
  * @param $userid
@@ -706,3 +707,10 @@ function checkCookie(): array {
   return [];
 }
 
+function getFooterParameter(string $userid): array {
+  return [SHOW_FOOTER => getParameterBoolean(SHOW_FOOTER, $userid),
+    SHOW_DONO_LINK => getParameterBoolean(SHOW_DONO_LINK, $userid),
+    SHOW_ABOUT_LINK => getParameterBoolean(SHOW_ABOUT_LINK, $userid),
+    SHOW_DATENSCHUTZ_LINK => getParameterBoolean(SHOW_DATENSCHUTZ_LINK, $userid),
+    SHOW_IMPRESSUM_LINK => getParameterBoolean(SHOW_IMPRESSUM_LINK, $userid)];
+}
