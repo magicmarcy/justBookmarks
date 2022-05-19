@@ -317,6 +317,8 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
     }
     ?>
     </ul>
+
+    <?php include('includes/footer.inc.php');?>
   </div>
 </div>
 
