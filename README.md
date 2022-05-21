@@ -1,5 +1,5 @@
 # justBookmarks (Early Alpha v0.5.485)
-![justBookmarks | PrintLogo](http://quellcode.ddns.net/bookmarks/images/about/print-logo-948x425.png)
+![justBookmarks | PrintLogo](http://quellcode.ddns.net/bookmarks/images/about/print-logo-945x425.png)
 
 ## Das Problem
 Die Synchronisation der Bookmarks ist gerade über viele verschiedene Browser hinweg ein echtes Problem. Bookmarks die über einen Browser hinzugefügt wurde sind natürlich in einem anderen Browser nicht vorhanden. Ja, es gibt einige Synchronisations-Dienste doch diese decken auch nicht alle Browser ab. 
