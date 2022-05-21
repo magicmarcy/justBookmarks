@@ -39,4 +39,9 @@ Du kannst all dies direkt hier auf GitHub über ein entsprechendes Flag unter [I
 * [Twitter](https://twitter.com/magic_marcy)
 * [Telegram](https://t.me/marcyessen)
 
-Stand: 20.05.2022 
+# Disclaimer
+Mein normales "Wohlfühlgebiet" und was in meiner täglichen Arbeit vor mir liegt ist in der Regel Java. Dieses Projekt habe ich in PHP umgesetzt um es möglichst schnell und effizient umsetzen zu können. Ich weiß, dass der Quellcode an manchen Stellen sehr unstrukturiert ist und es sicher viele Stellen gibt, an denen man etwas besser machen kann. Einiges davon wurde bereits in den Issues erfasst. Wenn dir aber noch etwas auffällt was ich besser machen kann so bitte ich dich, dafür eine eigene Issue zu erstellen oder mich über die benannten Wege zu kontaktieren. Vielen Dank dafür!
+
+>**Programmierer zu sein bedeutet lebenslanges Lernen!** 
+> 
+_Essen, 20.05.2022_ 
