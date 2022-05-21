@@ -39,4 +39,4 @@ Du kannst all dies direkt hier auf GitHub über ein entsprechendes Flag unter [I
 * [Twitter](https://twitter.com/magic_marcy)
 * [Telegram](https://t.me/marcyessen)
 
-Stand: 20.05.2022
+Stand: 20.05.2022 
