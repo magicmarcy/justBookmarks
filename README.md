@@ -1,4 +1,4 @@
-# justBookmarks (Early Alpha v0.5.485)
+# justBookmarks (Early Alpha v0.5.493)
 ![justBookmarks | PrintLogo](http://quellcode.ddns.net/bookmarks/images/about/print-logo-945x425.png)
 
 ## Das Problem
