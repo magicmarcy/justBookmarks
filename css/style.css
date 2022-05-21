@@ -103,6 +103,7 @@ html body {
     float:left;
     background-color: #16374d;
     color: darkgray;
+    position:fixed;
 }
 
 .column-middle {
@@ -111,6 +112,8 @@ html body {
     float: left;
     background-color: #122b40;
     color: lightgray;
+    position: fixed;
+    left: 80px;
 }
 
 .column-right {
@@ -315,6 +318,10 @@ html body {
     cursor: pointer;
 }
 
+.category-bookmarks {
+    padding-bottom: 50px;
+}
+
 .category-bookmarks ul {
     margin: 50px 0 0 50px;
     list-style: none;
@@ -452,6 +459,7 @@ html body {
     text-align: center;
     padding-top: 10px;
     font-size: 0.8em;
+    background-color: white;
 }
 
 .float-left {
