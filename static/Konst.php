@@ -2,7 +2,7 @@
 
 const PROJECTNAME             = "justBookmarks";
 const PROJECT_SLOGAN          = "Deine Bookmarks, überall verfügbar, in jedem Browser.";
-const PROJECTVERSION          = "0.5.325";
+const PROJECTVERSION          = "0.5.493";
 const PROJECTSHORTDESC        = PROJECTNAME . " | Deine Bookmarks, überall verfügbar, in jedem Browser!";
 const PROJECTLONGDESC         = PROJECTNAME . " ist ein einzigartiger Bookmarking-Dienst.";
 
