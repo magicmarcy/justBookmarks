@@ -170,6 +170,15 @@ html body {
     top: calc(50% - 15px);
 }
 
+.project-version a {
+    color: inherit;
+}
+
+.project-version a:hover {
+    color: #0768B3;
+    text-decoration: none;
+}
+
 .icons {
     font-size: 1.2em;
     padding: 45px 0 0 0;
