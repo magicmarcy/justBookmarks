@@ -7,6 +7,7 @@ const PROJECTSHORTDESC        = PROJECTNAME . " | Deine Bookmarks, überall verf
 const PROJECTLONGDESC         = PROJECTNAME . " ist ein einzigartiger Bookmarking-Dienst.";
 
 const BUYMEACOFFEELINK        = "https://buymeacoff.ee/magicmarcy";
+const GITHUB_RELEASEINFO      = "https://github.com/magicmarcy/justBookmarks/releases";
 
 const SESSION_COOKIE_LIFETIME = 2592000; // 30 Tage (60 * 60 * 24 * 30)
 const ALERT_TIMEOUT           = 5000;
@@ -28,18 +29,6 @@ const FORBIDDEN_CHAR_DELIMITER="#";
 
 const OKAY                    = '1';
 const NOKAY                   = '0';
-
-const VERSION_TITLE_TEXT      = "Version " . PROJECTVERSION . "&#013;&#013;"
-                              . "FIXED:&#013;"
-                              . "- Parameter Verwendung&#013;&#013;"
-                              . "UPDATES:&#013;"
-                              . "- Löschen von Bookmarks&#013;"
-                              . "- Löschen von Kategorien&#013;"
-                              . "- Login wird sich für 30 Tage gemerkt (wird beim manuellen Logout verworfen)&#013;"
-                              . "- Fehlerhandling verbessert&#013;&#013;"
-                              . "STILL NOT WORKING:&#013;"
-                              . "- Eigene Sortierung von Bookmarks&#013;";
-
 
 /* PARAMETER */
 const CATEGORY_BASE_COLOR     = "CATEGORY_BASE_COLOR";

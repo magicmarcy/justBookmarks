@@ -119,7 +119,7 @@ if (isset($_POST['delete-category-catid']) && isset($_POST['delete-category-user
 
   Logger::trace("main(): Kategorie loeschen geklickt. CATEGORYID=" . $catid . ' USERID=' . $userid);
 
-  if (deleteCategory($userid, $catid,)) {
+  if (deleteCategory($userid, $catid)) {
     echo '<div id="alert" class="alert alert-info" role="alert">Kategorie gelöscht, Bookmarks verschoben!</div>';
   } else {
     echo '<div id="alert" class="alert alert-danger" role="alert">Es ist ein Fehler beim Löschen der Kategorie aufgetreten!</div>';
@@ -168,7 +168,7 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
 <div class="column-middle">
   <div class="column-header-middle">
     <div class="project-name"><?php echo PROJECTNAME; ?></div>
-    <div class="project-version" title="<?php echo VERSION_TITLE_TEXT;?>"><?php echo PROJECTVERSION; ?></div>
+    <div class="project-version"><a href="<?php echo GITHUB_RELEASEINFO;?>" target="_blank" title="Releaseinfo @github"><?php echo PROJECTVERSION; ?></a></div>
   </div>
   <div class="demo-content">
     <div class="category-headline">KATEGORIEN <button id="addCatBtn" class="fa-upl-button" title="Kategorie hinzufügen"><i class="fa-solid fa-circle-plus"></i></button></div>
