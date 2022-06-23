@@ -508,10 +508,8 @@ function updateLastLoginWithUsernameAndPass(string $username, string $password):
 function getUserIdFromUsernameAndPass(string $username, string $password): int {
   Logger::trace('getUserIdFromUsernameAndPass(): Entry -> USERNAME=' . $username . ' PASS=' . $password);
 
-  $pass = hash('sha1', $password);
-
   $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
-  $sql = "SELECT ID, NAME, EMAIL, PASS, VERIFIED, CREATED, LASTLOGIN FROM USER WHERE NAME = '" . $username . "' AND LOWER(PASS) = '" . $pass . "'";
+  $sql = "SELECT ID, NAME, EMAIL, PASS, VERIFIED, CREATED, LASTLOGIN FROM USER WHERE NAME = '" . $username . "' AND LOWER(PASS) = '" . $password . "'";
   $results = $db->query($sql);
   Logger::trace('getUserIdFromUsernameAndPass(): Folgender SQL wird ausgefuehrt: ' . $sql);
   $ergebnis[] = array();
