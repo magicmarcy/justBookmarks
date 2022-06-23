@@ -337,15 +337,16 @@ html body {
 }
 
 .category-bookmarks li {
-    padding-bottom: 15px;
     padding-right: 50px;
 }
 
 .bookmark-box {
     border-radius: 5px;
-    padding: 10px 20px 10px 20px;
-    border: 1px solid lightgray;
-    height: 55px;
+    padding: 6px 20px 4px 20px;
+    border-width: 0 0 1px 0;
+    border-color: lightgray;
+    border-style: solid;
+    height: 35px;
     margin-right: 100px;
 }
 
@@ -356,17 +357,18 @@ html body {
 
 .bookmark-name {
     float: left;
-    display: inline;
-    font-size: 1.3em;
+    font-size: 1em;
     font-weight: bold;
 }
 
 .bookmark-url {
+    display: none;
     float: left;
-    padding: 5px 0 0 10px;
+    padding: 0 0 0 10px;
 }
 
 .bookmark-tags {
+    display: none;
     float: right;
     padding-top: 5px;
 }
@@ -440,11 +442,16 @@ html body {
 .delete-bookmark {
     float: right;
     position: relative;
-    top: -40px;
-    right: 70px;
+    top: -30px;
+    right: 110px;
     border: none;
     background: none;
     cursor: pointer;
+    color: white;
+}
+
+.delete-bookmark:hover {
+    color: black;
 }
 
 .delete-category {
