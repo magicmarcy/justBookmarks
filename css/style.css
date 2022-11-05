@@ -114,6 +114,7 @@ html body {
     color: lightgray;
     position: fixed;
     left: 80px;
+    overflow-y: auto;
 }
 
 .column-right {
