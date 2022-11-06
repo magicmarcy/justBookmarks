@@ -80,7 +80,7 @@ function checkLogin($username, $password): string {
   Logger::trace('checkLogin(): username: ' . $username . ' password: ' . $password);
 
   $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
-  $sql = "SELECT ID, NAME, EMAIL, PASS, VERIFIED, CREATED, LASTLOGIN FROM USER WHERE NAME = '" . $username . "' AND LOWER(PASS) = '" . strtolower($password) . "'";
+  $sql = "SELECT ID, NAME, EMAIL, PASS, VERIFIED, CREATED, LASTLOGIN FROM USER WHERE (NAME = '" . $username . "' OR EMAIL = '" . $username . "') AND LOWER(PASS) = '" . strtolower($password) . "'";
   $results = $db->query($sql);
   Logger::trace('checkLogin(): Folgender SQL wird ausgefuehrt: ' . $sql);
   $ergebnis[] = array();
