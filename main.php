@@ -42,6 +42,7 @@ if (isset($_POST["submit"])) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="externals/default.js"></script>
   <script>
       $(document).ready(function(){
           $("#btnClick").click(function(){
@@ -55,7 +56,7 @@ if (isset($_POST["submit"])) {
   </script>
 </head>
 <body>
-
+<div id="overlay" onclick="hideOverlay();"></div>
 
 <?php
 if (isset($_POST['name']) && isset($_POST['url']) && isset($_POST['tags']) && isset($_POST['catid'])&& isset($_POST['userid'])) {
@@ -232,32 +233,6 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
       <button type="submit" class="delete-category" style="<?php echo !isset($categoryId) || $categoryId == "0" || $categoryId == 0 ? 'display:none;' : '' ;?>" title="INFO: Alle Bookmarks der gelöschten Kategorie werden der Default-Kategorie zugewiesen!"><i class="fa-solid fa-trash-can"></i></button>
     </form>
 
-    <?php if ($categoryId > 0) {
-      echo '<form action="main.php?cat=' . $categoryId . '" method="post">';
-    } else {
-      echo '<form action="main.php" method="post">';
-    }?>
-    <div class="new-bookmark">
-      <input type="hidden" name="catid" id="catid" value="<?php echo $categoryId;?>">
-      <input type="hidden" name="userid" id="userid" value="<?php echo $userdata['ID'];?>">
-      <div class="new-bookmark-name">
-        <label for="name">Name:</label>
-        <input type="text" name="name" id="name" placeholder="Meine coole Seite"/>
-      </div>
-      <div class="new-bookmark-url">
-        <label for="url">URL:</label>
-        <input type="text" name="url" id="url" placeholder="https://google.de"/>
-      </div>
-      <div class="new-bookmark-tags">
-        <label for="tags">Tags:</label>
-        <input type="text" name="tags" id="tags" placeholder="suchen,musik"/>
-      </div>
-      <div class="submitBookmark">
-        <button type="submit" id="submitNewBookmark" title="Bookmark hinzufügen"><i class="fa-solid fa-circle-plus"></i></button>
-      </div>
-    </div>
-    </form>
-
     <div class="user-panel">
       <div class="user-icon-box">
         <div class="user-icon"><i class="fa-solid fa-user"></i></div>
@@ -325,6 +300,12 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
     ?>
     </ul>
 
+    <div class="upload-overlay" title="Bookmark hinzufügen">
+      <div class="add-bookmark-icon">
+        <a onclick="showAddBookmarkModal();"><img src="images/add_bookmark.png" alt="Add Bookmark" class="add-bookmark-icon"></a>
+      </div>
+    </div>
+
     <?php include('includes/footer.inc.php');?>
   </div>
 </div>
@@ -335,6 +316,56 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
   }?>
 
   <?php include('includes/addcategory.php');?>
+
+<div id="bookmark-modal">
+  <div class="modal-header">
+    <div class="modal-headline">Bookmark hinzuf&uuml;gen</div>
+    <div class="modal-close" title="Schließen"><a onclick="hideAddBookmarkModal();">X</a></div>
+  </div>
+  <div class="modal-content">
+
+    <?php if ($categoryId > 0) {
+      echo '<form action="main.php?cat=' . $categoryId . '" method="post">';
+    } else {
+      echo '<form action="main.php" method="post">';
+    }?>
+
+    <input type="hidden" name="catid" id="catid" value="<?php echo $categoryId;?>">
+    <input type="hidden" name="userid" id="userid" value="<?php echo $userdata['ID'];?>">
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <label for="name">Name:</label>
+        </div>
+        <div class="col">
+          <input autocomplete="off" type="text" name="name" id="name" onkeydown="validateNewBookmark(this.id);" placeholder="Meine coole Seite"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="url">URL:</label>
+        </div>
+        <div class="col">
+          <input autocomplete="off" type="text" name="url" id="url" onkeydown="validateNewBookmark(this.id);" placeholder="https://google.de"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="tags">Tags:</label>
+        </div>
+        <div class="col">
+          <input type="text" name="tags" id="tags" placeholder="suchen,musik"/>
+        </div>
+      </div>
+      <div class="submit-cancel-panel">
+        <span class="btn btn-cancel" id="cancel" onclick="hideAddBookmarkModal();" title="Abbrechen">Abbrechen</span>
+        <button class="btn btn-submit" disabled="disabled" type="submit" id="submitNewBookmark" title="Bookmark hinzufügen">Hinzufügen</button>
+      </div>
+    </div>
+    </form>
+
+  </div>
+</div>
 
 </body>
 </html>

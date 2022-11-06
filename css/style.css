@@ -528,3 +528,96 @@ html body {
     text-align: right;
     margin: -27px 60px 0 0;
 }
+
+.upload-overlay {
+    position: fixed;
+    bottom: 50px;
+    right: 25px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: lightcoral;
+    cursor: pointer;
+    transition: transform .2s; /* Animation */
+}
+
+.upload-overlay:hover {
+    transform: scale(1.2);
+}
+
+.add-bookmark-icon {
+    filter: brightness(0) invert(1);
+    width: 25px;
+    height: 25px;
+    border: none !important;
+    margin-left: 6px;
+    margin-top: 6px;
+}
+
+#bookmark-modal {
+    position: fixed;
+    top: calc(50% - 150px);
+    left: calc(50% - 200px);
+    display: none;
+    width: 400px;
+    z-index: 999;
+    transform: translate(calc(50% - 200px), calc(50% - 150px));
+}
+
+.modal-header {
+    font-weight: bold;
+    height: 50px;
+    color: white;
+    background-color: #16374d;
+    padding: 13px !important;
+    border: 1px solid #16374d;
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.modal-headline {
+    float: left;
+}
+
+.modal-close {
+    float: right;
+    font-weight: bolder;
+    cursor: pointer;
+}
+
+.modal-content {
+    padding: 25px;
+    margin-top: -2px;
+    border: 1px solid #16374d !important;
+    border-radius: 0 0 10px 10px !important;
+}
+
+#overlay {
+    position: fixed; /* Positioning and size */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(128, 128, 128, 0.77); /* color */
+    display: none; /* making it hidden by default */
+    z-index: 999;
+}
+
+.submit-cancel-panel {
+    float: right;
+    margin-top: 15px;
+}
+
+.btn {
+    padding: 5px;
+    width: 150px;
+    font-weight: bold !important;
+}
+
+.btn-cancel {
+    background-color: lightcoral;
+    color: white;
+}
+
+.btn-submit {
+    background-color: lightgreen;
+}
