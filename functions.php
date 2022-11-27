@@ -738,3 +738,40 @@ function getFooterParameter(string $userid): array {
     SHOW_DATENSCHUTZ_LINK => getParameterBoolean(SHOW_DATENSCHUTZ_LINK, $userid),
     SHOW_IMPRESSUM_LINK => getParameterBoolean(SHOW_IMPRESSUM_LINK, $userid)];
 }
+
+// TODO: Noch nicht perfekt, hier gibt es noch nen 404 falls ein Icon nicht gefunden wurde
+//  liefert aber dennoch irgendwie das StandardIcon
+function getFaviconFromUrl(string $url): void {
+  $base = 'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=%s&size=32';
+  $defaultIcoUrl = 'https://t1.gstatic.com/favicon.ico';
+
+  if (str_starts_with($url, 'http') && "1" === getParameter("LOAD_FAVICONS_FROM_GOOGLESERVICE", 0)) {
+    $url = parse_url($url, PHP_URL_SCHEME) . '://' . parse_url($url, PHP_URL_HOST);
+    $baseUrl = trim($url, '/');
+
+    $completeUrl = formatString($base, [$baseUrl]);
+
+    if (urlExists($completeUrl) && urlExists($defaultIcoUrl)) {
+      echo '<img src="' . $completeUrl . '" height="19" width="19" style="margin-bottom: 3px;"/>';
+    } else {
+      echo '      <i class="fa-regular fa-bookmark" style="padding-right: 3px;padding-left: 3px;"></i>';
+    }
+  } else {
+    echo '      <i class="fa-regular fa-bookmark" style="padding-right: 3px;padding-left: 3px;"></i>';
+  }
+}
+
+function urlExists(string $url): bool {
+  return !strpos($url, "404");
+}
+
+/**
+ * Replaces all %s in a String by the given values
+ *
+ * @param string $word the string with %s
+ * @param array $vars the array of the replacements
+ * @return string the replaced string
+ */
+function formatString(string $word, array $vars = array()): string {
+  return isset($word) ? vsprintf($word, $vars) : $word;
+}
