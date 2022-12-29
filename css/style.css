@@ -456,11 +456,15 @@ html body {
 }
 
 .delete-category {
-    color: lightgray;
+    color: lightcoral;
     padding: 28px 0 0 0;
     border: none;
     background: none;
     cursor: pointer;
+}
+
+.delete-category:hover {
+    color: #f15555;
 }
 
 .delete-category-form {
