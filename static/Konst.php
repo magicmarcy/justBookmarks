@@ -6,7 +6,8 @@ const PROJECTVERSION          = "0.5.634";
 const PROJECTSHORTDESC        = PROJECTNAME . " | Deine Bookmarks, überall verfügbar, in jedem Browser!";
 const PROJECTLONGDESC         = PROJECTNAME . " ist ein einzigartiger Bookmarking-Dienst.";
 
-const BUYMEACOFFEELINK        = "https://buymeacoff.ee/magicmarcy";
+const DONATELINK              = "http://magicmarcy.de/donate";
+const DONATETEXT              = "Donate";
 const GITHUB_RELEASEINFO      = "https://github.com/magicmarcy/justBookmarks/releases";
 
 const SESSION_COOKIE_LIFETIME = 2592000; // 30 Tage (60 * 60 * 24 * 30)
