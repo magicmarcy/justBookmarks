@@ -20,7 +20,7 @@ if (isset($userid)) {
     if ($showDonoLink) {
       echo '  <div class="float-left">';
       echo '    <div class="donation-text-box">';
-      echo '      <span class="donoation-text-box-text">It\'s hard to fight evil but the little things, like a cup of coffee, really helps. Right? -> <a class="donation-text-link" href="' . BUYMEACOFFEELINK . '" target="_blank">buymeacoffee</a></span>';
+      echo '      <span class="donoation-text-box-text">It\'s hard to fight evil but the little things, like a cup of coffee, really helps. Right? -> <a class="donation-text-link" href="' . DONATELINK . '" target="_blank">' . DONATETEXT . '</a></span>';
       echo '    </div>';
       echo '  </div>';
     }
