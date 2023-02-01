@@ -18,7 +18,7 @@ justBookmarks bietet genau das, was in diesem Kontext fehlt: Eine einfache Mögl
 * leichtgewichtige SQLite Datenbank für schnellen Zugriff
 * Keine Werbung
 * FairUse-Konzept
-* Kostenlos nutzen unter [http://quellcode.ddns.net/bookmarks](http://quellcode.ddns.net/bookmarks)
+* Kostenlos nutzen unter [https://bookmarks.magicmarcy.de](https://bookmarks.magicmarcy.de/)
 * Quellcode downloaden, SQLite Dantenbank erstellen und selber hosten (Anleitung folgt)
 
 ## Know Issues
