@@ -270,7 +270,7 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
         echo '<li class="bookmark-link-entry">';
         echo '<a href="' . $bookmark['URL'] . '" target="' . $basetarget . '">';
         echo '  <div class="bookmark-box">';
-        echo '    <div class="bookmark-name">';
+        echo '    <div class="bookmark-name truncated">';
         getFaviconFromUrl($bookmark['URL'], $userdata['ID']);
         echo '      ' . (empty(trim($bookmark['NAME'])) ? $bookmark['URL'] : $bookmark['NAME']);
         echo '    </div>';

@@ -625,3 +625,11 @@ html body {
 .btn-submit {
     background-color: lightgreen;
 }
+
+.truncated {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 95%;
+}
