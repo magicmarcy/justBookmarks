@@ -633,3 +633,10 @@ html body {
     text-overflow: ellipsis;
     width: 95%;
 }
+
+/* If the screen-size is SMALLER than 900px */
+@media only screen and (max-width: 900px) {
+    #left {
+        display: none !important;
+    }
+}

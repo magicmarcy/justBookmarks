@@ -11,6 +11,8 @@ if ($_SESSION['login'] != OKAY) {
   header("Location: " . PROJECT_STARTPAGE);
 }
 
+deleteAddCookie();
+
 $userdata = $_SESSION['userdata'];
 
 Logger::trace("init(): Login: ID=". $userdata['ID'] . " NANE=". $userdata['NAME'] . " EMAIL=" . $userdata['EMAIL'] . " PASS=" . $userdata['PASS'] . " VERIFIED=" . $userdata['VERIFIED'] . " CREATED=" . $userdata['CREATED'] . " LASTLOGIN=" . $userdata['LASTLOGIN']);

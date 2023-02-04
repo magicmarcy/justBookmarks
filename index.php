@@ -38,7 +38,13 @@ if (isset($_POST["submit"]) || $userDataOkay) {
 
     $_SESSION['login'] = OKAY;
 
-    header("Location: main.php");
+    $checkAddBookmarkCookie = checkAddCookie();
+
+    if (!empty($checkAddBookmarkCookie)) {
+      header("Location: addBookmark.php?title=" . $checkAddBookmarkCookie[0] . "&url=" . $checkAddBookmarkCookie[1]);
+    } else {
+      header("Location: main.php");
+    }
   } else {
     Logger::trace("index(): +++++ Fehlgeschlagener Loginversuch! +++++");
   }
@@ -118,5 +124,3 @@ if (isset($_POST["submit"]) || $userDataOkay) {
 </div>
 </body>
 </html>
-
-
