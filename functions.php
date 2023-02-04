@@ -519,7 +519,7 @@ function getUserIdFromUsernameAndPass(string $username, string $password): int {
   }
 
   if (count($ergebnis) === 2) {
-    var_dump($ergebnis);
+    // var_dump($ergebnis);
 
     $newUserId = $ergebnis[1]['ID'];
     Logger::trace("getUserIdFromUsernameAndPass(): EXIT -> " . $newUserId);
@@ -660,6 +660,25 @@ function createAndSetCookie(): void {
 }
 
 /**
+ * Hier schreiben wir die Daten zum hinzufuegen eines Bookmarks temporaer in ein Cookie falls der User sich
+ * vor dem Hunzufuegen erst einloggen muss. Wenn wir nach dem Login ein solches Cookie finden koennen wir
+ * im Popup direkt wieder zuruecknavigieren und die gespeicherten Daten uebergeben.
+ *
+ * Wenn der User keine Cookies aktiviert hat, muss er sich eh jedes Mal neu einloggen. Hier muessten wir also
+ * lediglich schauen ob der Aufruf aus dem Popup kommt und dann ein abgespecktes Loginformular zur Verfuegung
+ * stellen.
+ *
+ * Das Cookie ist lediglich 60 Sekunden gueltig -> bleibt also diese 60 Sekunden eh nur gueltig, wenn man addBookmark
+ * aufruft und sich dann NICHT einlogged
+ */
+function createAddBookmarkCookie(string $title, string $url): void {
+  setcookie("addBookmarkTitle", $title, time() + 60);
+  setcookie("addBookmarkUrl", $url, time() + 60);
+
+  Logger::trace("Login erforderlich, Daten temporaer in Cookie gespeichert (falls moeglich)!");
+}
+
+/**
  * Aktualisieren des User-Tokens. Wir muessen hier nichts zurueck bekommen weil es uns egal ist
  * ob das funktioniert hat. Im Zweifel muss sich der User neu einloggen.
  */
@@ -701,7 +720,27 @@ function generateRandomString(): string {
  */
 function deleteCookieIfExists(): void {
   if (isset($_COOKIE['justBookmarks'])) {
-    setcookie("justBookmarks","",time()-3600);
+    setcookie("justBookmarks", "", time()-3600);
+  }
+}
+
+function deleteAddCookie(): void {
+  if (isset($_COOKIE['addBookmarkTitle'])) {
+    setcookie("addBookmarkTitle", "", time()-3600);
+  }
+
+  if (isset($_COOKIE['addBookmarkUrl'])) {
+    setcookie("addBookmarkUrl", "", time()-3600);
+  }
+}
+
+function checkAddCookie(): array {
+  Logger::trace("checkAddCookie(): Enter ->");
+
+  if (isset($_COOKIE['addBookmarkTitle']) && isset($_COOKIE['addBookmarkUrl'])) {
+    return [$_COOKIE['addBookmarkTitle'], $_COOKIE['addBookmarkUrl']];
+  } else {
+    return [];
   }
 }
 
