@@ -1,8 +1,7 @@
 <?php
-
 const PROJECTNAME             = "justBookmarks";
 const PROJECT_SLOGAN          = "Deine Bookmarks, überall verfügbar, in jedem Browser.";
-const PROJECTVERSION          = "0.5.634";
+const PROJECTVERSION          = "0.6.227";
 const PROJECTSHORTDESC        = PROJECTNAME . " | Deine Bookmarks, überall verfügbar, in jedem Browser!";
 const PROJECTLONGDESC         = PROJECTNAME . " ist ein einzigartiger Bookmarking-Dienst.";
 
@@ -77,6 +76,3 @@ const FIELD_VALUE               = "VALUE";
 
 const USERNAME_MIN_CHARS      = 5;
 const PASSWORD_MIN_CHARS      = 8;
-
-
-

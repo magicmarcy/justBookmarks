@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Liefert alle Kategorien der uebergebenen User-ID, sortiert nach NAME zurueck.
  */
@@ -790,12 +789,12 @@ function getFaviconFromUrl(string $url, $userid): void {
     $completeUrl = formatString($base, [$baseUrl]);
 
     if (urlExists($completeUrl) && urlExists($defaultIcoUrl)) {
-      echo '<img src="' . $completeUrl . '" height="19" width="19" style="margin-bottom: 3px;"/>';
+      echo '<img src="' . $completeUrl . '" height="19" width="19" style="margin-bottom: 3px;margin-right:5px;"/>';
     } else {
-      echo '      <i class="fa-regular fa-bookmark" style="padding-right: 3px;padding-left: 3px;"></i>';
+      echo '      <i class="fa-regular fa-bookmark" style="padding-right: 7px;padding-left: 3px;"></i>';
     }
   } else {
-    echo '      <i class="fa-regular fa-bookmark" style="padding-right: 3px;padding-left: 3px;"></i>';
+    echo '      <i class="fa-regular fa-bookmark" style="padding-right: 7px;padding-left: 3px;"></i>';
   }
 }
 

@@ -1,5 +1,4 @@
 <?php
-
 function usernameAndId(): String {
   $username = "";
   $userid = "";

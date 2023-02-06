@@ -1,5 +1,4 @@
 <?php
-
 include('functions.php');
 include('static/Konst.php');
 require('Logger.php');
@@ -21,7 +20,6 @@ if (isset($_POST["submit"])) {
   $categoryid = $_POST["categoryid"];
   Logger::trace("main(): POST->categoryid: " . $categoryid);
 }
-
 ?>
 
 
@@ -32,10 +30,6 @@ if (isset($_POST["submit"])) {
   <title><?php echo PROJECTSHORTDESC; ?></title>
   <meta name="description" content="<?php echo PROJECTSHORTDESC; ?>">
   <link rel="icon" href="images/logo.png" type="image/png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oleo+Script+Swash+Caps&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
@@ -298,7 +292,7 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
 
       }
     } else {
-      echo '<li><i class="fa-solid fa-not-equal"></i> Keine Bookmarks in dieser Kategorie vorhanden.<br/><small>Du kannst über die Eingabefelder oben einfach ein neues Bookmark zu dieser Kategorie hinzufügen.</small></li>';
+      echo '<li class="no-items"><i class="fa-solid fa-not-equal"></i> Keine Bookmarks in dieser Kategorie vorhanden.<br/><small>Du hast in dieser Kategorie noch keine Bookmarks gespeichert.<br/>Klicke <a style="cursor: pointer" onclick="showAddBookmarkModal();"><b>hier</b></a> um ein neues Bookmark dieser Katergorie hinzuzuf&uuml;gen</small></li>';
     }
     ?>
     </ul>
