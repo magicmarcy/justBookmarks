@@ -1,5 +1,4 @@
 <?php
-
 include('functions.php');
 include('static/Konst.php');
 require('Logger.php');
@@ -60,8 +59,6 @@ array_push($categories, ['ID' => '0', 'NAME' => 'Default', 'USERID' => $userdata
 
 $sorted = array_column($categories, 'NAME');
 array_multisort($sorted, SORT_ASC, $categories);
-
-
 ?>
 <!DOCTYPE html>
 <html lang="de">

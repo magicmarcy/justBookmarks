@@ -1,3 +1,86 @@
+/* latin-ext */
+@font-face {
+    font-family: 'Oleo Script Swash Caps';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/oleoscriptswashcaps/v13/Noaj6Vb-w5SFbTTAsZP_7JkCS08K-jCzDn_HAXOkSL0H.woff2) format('woff2');
+    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+    font-family: 'Oleo Script Swash Caps';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/oleoscriptswashcaps/v13/Noaj6Vb-w5SFbTTAsZP_7JkCS08K-jCzDn_HAX2kSA.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* cyrillic-ext */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fCRc4EsA.woff2) format('woff2');
+    unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+/* cyrillic */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fABc4EsA.woff2) format('woff2');
+    unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+/* greek-ext */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fCBc4EsA.woff2) format('woff2');
+    unicode-range: U+1F00-1FFF;
+}
+/* greek */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fBxc4EsA.woff2) format('woff2');
+    unicode-range: U+0370-03FF;
+}
+/* vietnamese */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fCxc4EsA.woff2) format('woff2');
+    unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+1EA0-1EF9, U+20AB;
+}
+/* latin-ext */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fChc4EsA.woff2) format('woff2');
+    unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/roboto/v30/KFOlCnqEu92Fr1MmSU5fBBc4.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 html body {
     font-family: 'Roboto', sans-serif;
 }
@@ -28,7 +111,7 @@ html body {
 .frontpage-logo {
     position: absolute;
     top: calc(50% - 180px);
-    left: calc(50% - 180px);
+    left: calc(25% - 180px);
     filter: opacity(50%);
 }
 
@@ -114,7 +197,7 @@ html body {
     color: lightgray;
     position: fixed;
     left: 80px;
-    overflow-y: auto;
+    border-right: 1px solid #122b40;
 }
 
 .column-right {
@@ -182,7 +265,7 @@ html body {
 
 .icons {
     font-size: 1.2em;
-    padding: 45px 0 0 0;
+    padding: 26px 0 0 0;
     margin-left: -10px;
 }
 
@@ -235,12 +318,13 @@ html body {
     float: right;
     padding-top: 6px;
     font-size: 0.7em;
+    padding-right: 5px;
 }
 
 .category-headline {
     font-size: 0.8em;
     width: 250px;
-    margin: 50px 0 0 25px;
+    margin: 30px 0 0 25px;
     height: 40px;
     border-bottom: 1px solid lightgray;
 }
@@ -260,7 +344,7 @@ html body {
 
 .category-main-title {
     float:left;
-    padding: 28px 10px 0 25px;
+    padding: 28px 10px 0 42px;
 }
 
 .category-main-title i {
@@ -329,36 +413,44 @@ html body {
 }
 
 .category-bookmarks {
-    padding-bottom: 50px;
+    /*padding-bottom: 50px;*/
 }
 
 .category-bookmarks ul {
-    margin: 50px 0 0 50px;
+    margin: 21px 0 0 0;
     list-style: none;
 }
 
 .category-bookmarks li {
     padding-right: 50px;
+    margin-left: -20px;
+}
+
+li.no-items {
+    padding-right: 50px;
+    margin-left: 2px;
+    padding-top: 8px;
 }
 
 .bookmark-box {
-    border-radius: 5px;
     padding: 6px 20px 4px 20px;
     border-width: 0 0 1px 0;
     border-color: lightgray;
     border-style: solid;
-    height: 35px;
+    height: 40px;
     margin-right: 100px;
 }
 
 .bookmark-box:hover {
-    background-color: #16374d;
+    border: 0;
+    border-radius: 5px;
+    background-color: #29455B;
     color: white;
 }
 
 .bookmark-name {
     float: left;
-    font-size: 1em;
+    font-size: 1.1em;
     font-weight: bold;
 }
 
@@ -443,7 +535,7 @@ html body {
 .delete-bookmark {
     float: right;
     position: relative;
-    top: -30px;
+    top: -33px;
     right: 110px;
     border: none;
     background: none;
@@ -591,8 +683,9 @@ html body {
 .modal-content {
     padding: 25px;
     margin-top: -2px;
-    border: 1px solid #16374d !important;
-    border-radius: 0 0 10px 10px !important;
+    border: 1px solid #ffffff !important;
+    /*border-radius: 0 0 10px 10px !important;*/
+    border-radius: unset !important;
 }
 
 #overlay {
@@ -613,7 +706,7 @@ html body {
 
 .btn {
     padding: 5px;
-    width: 150px;
+    /*width: 150px;*/
     font-weight: bold !important;
 }
 
@@ -639,4 +732,46 @@ html body {
     #left {
         display: none !important;
     }
+}
+
+.demo-content, .category-bookmarks{
+    overflow: auto;
+    height: calc(100% - 120px);
+}
+
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+.demo-content {
+    scrollbar-width: auto;
+    scrollbar-color: #16374d #122b40;
+}
+
+/* Chrome, Edge, and Safari */
+.demo-content::-webkit-scrollbar {
+    width: 16px;
+}
+
+.demo-content::-webkit-scrollbar-track {
+    background: #122b40;
+}
+
+.demo-content::-webkit-scrollbar-thumb {
+    background-color: #16374d;
+    border-radius: 0;
+    border: 3px none #122b40;
+}
+
+.modal-content input[type=text],
+.popup-form input[type=text] {
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.modal-content input[type=text]:focus,
+.popup-form input[type=text]:focus {
+    border-top: none;
+    border-left: none;
+    border-right: none;
 }
