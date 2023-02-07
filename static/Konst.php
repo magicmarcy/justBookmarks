@@ -59,6 +59,7 @@ const PARAM_LASTLOGIN         = ":lastlogin";
 const PARAM_NAME              = ":name";
 const PARAM_URL               = ":url";
 const PARAM_TAGS              = ":tags";
+const PARAM_POSITION          = ":position";
 const PARAM_BOOKMARKID        = ":bookmarkid";
 const PARAM_TOKEN             = ":token";
 const PARAM_FORBIDDEN_CHARS   = "PARAM_FORBIDDEN_CHARS";

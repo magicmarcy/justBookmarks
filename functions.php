@@ -577,14 +577,17 @@ function addNewBookmark(string $newBookmarkName, string $newBookmarkUrl, string 
 
   $tagsWithoutWhitespaces = str_replace(" ","",$newBookmarkTags);
 
+  $newPosition = getNextPositionIdOfCategory($newBookmarkCatId, $newBookmarkUserId);
+
   $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
-  $sql = "INSERT INTO BOOKMARK (CATEGORYID, USERID, NAME, URL, TAGS) VALUES (:catid, :userid, :name, :url, :tags)";
+  $sql = "INSERT INTO BOOKMARK (CATEGORYID, USERID, NAME, URL, TAGS, POSITION) VALUES (:catid, :userid, :name, :url, :tags, :position)";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_CATID, $newBookmarkCatId);
   $stmt -> bindParam(PARAM_USERID, $newBookmarkUserId);
   $stmt -> bindParam(PARAM_NAME, $newBookmarkName);
   $stmt -> bindParam(PARAM_URL, $newBookmarkUrl);
   $stmt -> bindParam(PARAM_TAGS, $tagsWithoutWhitespaces);
+  $stmt -> bindParam(PARAM_POSITION, $newPosition);
 
   Logger::trace('addNewBookmark(): Folgender SQL wird ausgefuehrt: ' . $sql);
 
@@ -599,6 +602,30 @@ function addNewBookmark(string $newBookmarkName, string $newBookmarkUrl, string 
 
   Logger::trace("addNewBookmark(): Bookmark erfolgreich angelegt! ID=" . $id);
   return true;
+}
+
+function getNextPositionIdOfCategory($categoryid, $userid) {
+  Logger::trace('getNextPositionIdOfCategory(): Naechste freie PositionsId ermitteln: CATEGORY=' . $categoryid . ' USERID=' . $userid);
+
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $sql = "SELECT POSITION FROM BOOKMARK WHERE CATEGORYID = :catid AND USERID = :userid ORDER BY POSITION DESC LIMIT 1";
+  $stmt = $db -> prepare($sql);
+  $stmt -> bindParam(PARAM_CATID, $categoryid);
+  $stmt -> bindParam(PARAM_USERID, $userid);
+  $stmt -> execute();
+
+  $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+  $lastPosition = 0;
+  if ($res) {
+    $lastPosition = $res[0]['POSITION'];
+  }
+
+  $newPosition = $lastPosition + 1;
+
+  Logger::trace('getNextPositionIdOfCategory(): Ermittelte PositionsID: ' . $newPosition);
+
+  return $newPosition;
 }
 
 function deleteBookmark($bookmarkid, $userid, $catid): bool {
