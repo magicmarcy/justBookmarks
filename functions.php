@@ -2,7 +2,7 @@
 /**
  * Liefert alle Kategorien der uebergebenen User-ID, sortiert nach NAME zurueck.
  */
-function getCategorieListByUserId($userid): array {
+function getCategorieListByUserId($userid, $withsubs): array {
   Logger::trace('getCategorieListByUserId(): Enter -> ' . $userid);
 
   $categories = [];
@@ -13,7 +13,11 @@ function getCategorieListByUserId($userid): array {
   }
 
   $db = new PDO(PROJECT_DATABASE) or die ("failed to open db");
-  $sql = "SELECT ID, NAME, USERID, COLOR FROM CATEGORY WHERE USERID = :id ORDER BY 2";
+  if ($withsubs) {
+    $sql = "SELECT ID, NAME, USERID, COLOR, PARENT FROM CATEGORY WHERE USERID = :id ORDER BY 2";
+  } else {
+    $sql = "SELECT ID, NAME, USERID, COLOR, PARENT FROM CATEGORY WHERE USERID = :id AND PARENT = 0 ORDER BY 2";
+  }
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_ID, $userid);
 
@@ -23,9 +27,9 @@ function getCategorieListByUserId($userid): array {
   $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
   foreach($res as $row) {
-    $categories[] = ['ID' => $row['ID'], 'NAME' => $row['NAME'], 'USERID' => $row['USERID'], 'COLOR' => $row['COLOR']];
+    $categories[] = ['ID' => $row['ID'], 'NAME' => $row['NAME'], 'USERID' => $row['USERID'], 'COLOR' => $row['COLOR'], 'PARENT' => $row['PARENT']];
 
-    Logger::trace('getCategorieListByUserId(): Datensatz erzeugt: ID=' . $row[FIELD_ID] . ' NAME=' . $row[FIELD_NAME] . ' USERID=' . $row[FIELD_USERID] . ' COLOR=' . $row[FIELD_COLOR]);
+    Logger::trace('getCategorieListByUserId(): Datensatz erzeugt: ID=' . $row[FIELD_ID] . ' NAME=' . $row[FIELD_NAME] . ' USERID=' . $row[FIELD_USERID] . ' COLOR=' . $row[FIELD_COLOR] . ' PARENT=' . $row[FIELD_PARENT]);
   }
 
   if (empty($categories)) {
@@ -37,6 +41,45 @@ function getCategorieListByUserId($userid): array {
   $db = null;
 
   Logger::trace('getCategorieListByUserId(): Exit -> ()');
+  return $categories;
+}
+
+function getSubCategorieListByUserId($userid, $categoryid): array {
+  Logger::trace('getSubCategorieListByUserId(): Enter -> ' . $userid . ' ' . $categoryid);
+
+  $categories = [];
+
+  if (!isset($userid)) {
+    Logger::error('getSubCategorieListByUserId(): Keine User-ID erhalten!');
+    return $categories;
+  }
+
+  $db = new PDO(PROJECT_DATABASE) or die ("failed to open db");
+  $sql = "SELECT ID, NAME, USERID, COLOR, PARENT FROM CATEGORY WHERE USERID = :id AND PARENT = :parent ORDER BY 2";
+  $stmt = $db -> prepare($sql);
+  $stmt -> bindParam(PARAM_ID, $userid);
+  $stmt -> bindParam(PARAM_PARENT, $categoryid);
+
+  Logger::trace('getSubCategorieListByUserId(): Folgender SQL wird ausgefuehrt: ' . $sql);
+
+  $stmt -> execute();
+  $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+  foreach($res as $row) {
+    $categories[] = ['ID' => $row['ID'], 'NAME' => $row['NAME'], 'USERID' => $row['USERID'], 'COLOR' => $row['COLOR'], 'PARENT' => $row['PARENT']];
+
+    Logger::trace('getSubCategorieListByUserId(): Datensatz erzeugt: ID=' . $row[FIELD_ID] . ' NAME=' . $row[FIELD_NAME] . ' USERID=' . $row[FIELD_USERID] . ' COLOR=' . $row[FIELD_COLOR] . ' PARENT=' . $row[FIELD_PARENT]);
+  }
+
+  if (empty($categories)) {
+    Logger::warn('getSubCategorieListByUserId(): Es konnten keine Datensaetze ermittelt werden.');
+  } else {
+    Logger::trace('getSubCategorieListByUserId(): Zuweisung durchlaufen, ' . sizeof($categories) . ' Ergebnisse erzeugt, gebe Ergebnis zurueck');
+  }
+
+  $db = null;
+
+  Logger::trace('getSubCategorieListByUserId(): Exit -> ()');
   return $categories;
 }
 
@@ -385,15 +428,16 @@ function validateColor($color): bool {
   return true;
 }
 
-function addNewCategory($categoryname, $color, $userid):bool {
-  Logger::trace('addNewCategory(): Enter -> CATEGORYNAME=' . $categoryname . ' COLOR=' . $color . ' USERID=' . $userid);
+function addNewCategory($categoryname, $color, $userid, $parentcategoryid):bool {
+  Logger::trace('addNewCategory(): Enter -> CATEGORYNAME=' . $categoryname . ' COLOR=' . $color . ' USERID=' . $userid . ' PARENTID=' . $parentcategoryid);
 
   $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
-  $sql = "INSERT INTO CATEGORY (NAME, USERID, COLOR) VALUES (:categoryname, :userid, :color)";
+  $sql = "INSERT INTO CATEGORY (NAME, USERID, COLOR, PARENT) VALUES (:categoryname, :userid, :color, :parent)";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(':categoryname', $categoryname);
   $stmt -> bindParam(':userid', $userid);
   $stmt -> bindParam(':color', $color);
+  $stmt -> bindParam(':parent', $parentcategoryid);
 
   Logger::trace('getParameter(): Folgender SQL wird ausgefuehrt: ' . $sql);
 

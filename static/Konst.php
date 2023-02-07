@@ -47,6 +47,7 @@ const SHOW_IMPRESSUM_LINK     = "SHOW_IMPRESSUM_LINK";
 const NO_USER                 = "0";
 
 const PARAM_ID                = ":id";
+const PARAM_PARENT            = ":parent";
 const PARAM_USERID            = ":userid";
 const PARAM_CATID             = ":catid";
 const PARAM_CATNAME           = ":catName";
@@ -69,6 +70,7 @@ const FIELD_ID                  = "ID";
 const FIELD_NAME                = "NAME";
 const FIELD_USERID              = "USERID";
 const FIELD_COLOR               = "COLOR";
+const FIELD_PARENT              = "PARENT";
 const FIELD_CATEGORYID          = "CATEGORYID";
 const FIELD_URL                 = "URL";
 const FIELD_TAGS                = "TAGS";
