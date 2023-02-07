@@ -54,7 +54,7 @@ if (isset($_GET["url"])) {
   Logger::trace("addBookmark(): GET->url: " . $url);
 }
 
-$categories = getCategorieListByUserId($userdata['ID']);
+$categories = getCategorieListByUserId($userdata['ID'], true);
 array_push($categories, ['ID' => '0', 'NAME' => 'Default', 'USERID' => $userdata['ID'], 'COLOR' => '#ff5733']);
 
 $sorted = array_column($categories, 'NAME');

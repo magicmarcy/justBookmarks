@@ -91,12 +91,13 @@ if (isset($_POST['delete_bookmark_bookmarkid']) && isset($_POST['delete_bookmark
 
 if (isset($_GET['category']) && isset($_GET['color'])) {
   $categoryname = $_GET['category'];
+  $parentcategoryid = $_GET['parentcategoryid'];
   $color = $_GET['color'];
 
-  Logger::trace("main(): Kategorie hinzufügen geklickt. CATEGORY=" . $categoryname . ' COLOR=' . $color);
+  Logger::trace("main(): Kategorie hinzufügen geklickt. CATEGORY=" . $categoryname . ' COLOR=' . $color . ' PARENTID=' . $parentcategoryid);
 
   if (validateCategory($categoryname, $userdata['ID']) && validateColor($color)) {
-    if (addNewCategory($categoryname, $color, $userdata['ID'])) {
+    if (addNewCategory($categoryname, $color, $userdata['ID'], $parentcategoryid)) {
       echo '<div id="alert" class="alert alert-info" role="alert">Kategorie hinzugefügt!</div>';
     } else {
       echo '<div id="alert" class="alert alert-danger" role="alert">Es ist ein Fehler beim Anlegen der Kategorie aufgetreten!</div>';
@@ -179,16 +180,30 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
       </li>
 
       <?php
-      $categories = getCategorieListByUserId($userdata['ID']);
+      $categories = getCategorieListByUserId($userdata['ID'], true);
 
       foreach ($categories as $row) {
-        echo '<li>';
-        echo '  <div class="category-entry">';
-        echo '    <div class="category-bullet" style="background-color: ' . $row['COLOR'] . ';"></div>';
-        echo '    <div class="category-name"><a href="main.php?cat=' . $row['ID'] . '">' . $row['NAME'] . '</a></div>';
-        echo '    <div class="category-number">' . getNumberOfBookmarksById($row['ID'], $userdata['ID']) . '</div>';
-        echo '  </div>';
-        echo '</li>';
+        if ($row['PARENT'] == '0') {
+          echo '<li>';
+          echo '  <div class="category-entry">';
+          echo '    <div class="category-bullet" style="background-color: ' . $row['COLOR'] . ';"></div>';
+          echo '    <div class="category-name"><a href="main.php?cat=' . $row['ID'] . '">' . $row['NAME'] . '</a></div>';
+          echo '    <div class="category-number">' . getNumberOfBookmarksById($row['ID'], $userdata['ID']) . '</div>';
+          echo '  </div>';
+          echo '</li>';
+
+          $subcategories = getSubCategorieListByUserId($userdata['ID'], $row['ID']);
+
+          foreach ($subcategories as $subrow) {
+            echo '<li style="padding-left:15px;">';
+            echo '  <div class="subcategory-entry">';
+//            echo '    <div class="category-bullet" style="background-color: ' . $row['COLOR'] . ';"></div>';
+            echo '    <div class="category-name"><i style="color: ' . $subrow['COLOR'] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="main.php?cat=' . $subrow['ID'] . '">' . $subrow['NAME'] . '</a></div>';
+            echo '    <div class="category-number">' . getNumberOfBookmarksById($subrow['ID'], $userdata['ID']) . '</div>';
+            echo '  </div>';
+            echo '</li>';
+          }
+        }
       }
       ?>
     </ul>
