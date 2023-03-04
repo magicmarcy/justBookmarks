@@ -58,11 +58,10 @@ if (isset($_POST["submit"]) || $userDataOkay) {
   <meta name="description" content="<?php echo PROJECTSHORTDESC; ?>">
   <link rel="icon" href="images/logo.png" type="image/png">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet"
-        href="https://cdn.magicmarcy.de/bootstrap/bootstrap-5.2.3-dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdn.magicmarcy.de/fontawesome/fontawesome-free-6.2.1-web/css/fontawesome.min.css">
-  <link rel="stylesheet" href="https://cdn.magicmarcy.de/fontawesome/fontawesome-free-6.2.1-web/css/all.min.css">
-  <script src="https://cdn.magicmarcy.de/jquery/jquery-3.6.3/jquery-3.6.3.min.js"></script>
+  <link rel="stylesheet" href="externals/bootstrap/5.2.3/css/bootstrap.min.css">
+  <link rel="stylesheet" href="externals/fontawesome/6.2.1/fontawesome.min.css">
+  <link rel="stylesheet" href="externals/fontawesome/6.2.1/all.min.css">
+  <script src="externals/jquery/3.6.3/jquery-3.6.3.min.js"></script>
   <script>
     setTimeout(function() {
         $('#alert').fadeOut('fast');
