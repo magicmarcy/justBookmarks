@@ -1,11 +1,11 @@
 <?php
 const PROJECTNAME             = "justBookmarks";
 const PROJECT_SLOGAN          = "Deine Bookmarks, überall verfügbar, in jedem Browser.";
-const PROJECTVERSION          = "0.6.227";
+const PROJECTVERSION          = "0.6.527";
 const PROJECTSHORTDESC        = PROJECTNAME . " | Deine Bookmarks, überall verfügbar, in jedem Browser!";
 const PROJECTLONGDESC         = PROJECTNAME . " ist ein einzigartiger Bookmarking-Dienst.";
 
-const DONATELINK              = "http://magicmarcy.de/donate";
+const DONATELINK              = "https://magicmarcy.de/donate";
 const DONATETEXT              = "Donate";
 const GITHUB_RELEASEINFO      = "https://github.com/magicmarcy/justBookmarks/releases";
 
@@ -23,7 +23,7 @@ const PROJECT_DATABASE        = "sqlite:db/bookmarkservice.db";
 const TITLE_LOGIN             = 'Login';
 const FORM_ACTION             = 'index.php';
 const DASHBOARD               = 'main.php';
-CONST CAT_URL_PREFIX          = 'cat';
+const CAT_URL_PREFIX          = 'cat';
 const CAT_MAX_CHARS           = 20;
 const FORBIDDEN_CHAR_DELIMITER="#";
 
@@ -64,18 +64,19 @@ const PARAM_BOOKMARKID        = ":bookmarkid";
 const PARAM_TOKEN             = ":token";
 const PARAM_FORBIDDEN_CHARS   = "PARAM_FORBIDDEN_CHARS";
 
-
 const PARAM_REGISTER_WARNING  = "SHOW_REGISTER_WARNING";
 
-const FIELD_ID                  = "ID";
-const FIELD_NAME                = "NAME";
-const FIELD_USERID              = "USERID";
-const FIELD_COLOR               = "COLOR";
-const FIELD_PARENT              = "PARENT";
-const FIELD_CATEGORYID          = "CATEGORYID";
-const FIELD_URL                 = "URL";
-const FIELD_TAGS                = "TAGS";
-const FIELD_VALUE               = "VALUE";
+const FIELD_ID                = "ID";
+const FIELD_NAME              = "NAME";
+const FIELD_USERID            = "USERID";
+const FIELD_COLOR             = "COLOR";
+const FIELD_PARENT            = "PARENT";
+const FIELD_CATEGORYID        = "CATEGORYID";
+const FIELD_URL               = "URL";
+const FIELD_TAGS              = "TAGS";
+const FIELD_VALUE             = "VALUE";
 
 const USERNAME_MIN_CHARS      = 5;
 const PASSWORD_MIN_CHARS      = 8;
+
+const FAILED_OPEN_DB          = "failed to open db";

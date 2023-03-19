@@ -12,12 +12,14 @@ function getCategorieListByUserId($userid, $withsubs): array {
     return $categories;
   }
 
-  $db = new PDO(PROJECT_DATABASE) or die ("failed to open db");
+  $db = new PDO(PROJECT_DATABASE) or die (FAILED_OPEN_DB);
+
   if ($withsubs) {
     $sql = "SELECT ID, NAME, USERID, COLOR, PARENT FROM CATEGORY WHERE USERID = :id ORDER BY 2";
   } else {
     $sql = "SELECT ID, NAME, USERID, COLOR, PARENT FROM CATEGORY WHERE USERID = :id AND PARENT = 0 ORDER BY 2";
   }
+
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_ID, $userid);
 
@@ -26,7 +28,7 @@ function getCategorieListByUserId($userid, $withsubs): array {
   $stmt -> execute();
   $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
-  foreach($res as $row) {
+  foreach ($res as $row) {
     $categories[] = ['ID' => $row['ID'], 'NAME' => $row['NAME'], 'USERID' => $row['USERID'], 'COLOR' => $row['COLOR'], 'PARENT' => $row['PARENT']];
 
     Logger::trace('getCategorieListByUserId(): Datensatz erzeugt: ID=' . $row[FIELD_ID] . ' NAME=' . $row[FIELD_NAME] . ' USERID=' . $row[FIELD_USERID] . ' COLOR=' . $row[FIELD_COLOR] . ' PARENT=' . $row[FIELD_PARENT]);
@@ -54,7 +56,7 @@ function getSubCategorieListByUserId($userid, $categoryid): array {
     return $categories;
   }
 
-  $db = new PDO(PROJECT_DATABASE) or die ("failed to open db");
+  $db = new PDO(PROJECT_DATABASE) or die (FAILED_OPEN_DB);
   $sql = "SELECT ID, NAME, USERID, COLOR, PARENT FROM CATEGORY WHERE USERID = :id AND PARENT = :parent ORDER BY 2";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_ID, $userid);
@@ -65,7 +67,7 @@ function getSubCategorieListByUserId($userid, $categoryid): array {
   $stmt -> execute();
   $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
-  foreach($res as $row) {
+  foreach ($res as $row) {
     $categories[] = ['ID' => $row['ID'], 'NAME' => $row['NAME'], 'USERID' => $row['USERID'], 'COLOR' => $row['COLOR'], 'PARENT' => $row['PARENT']];
 
     Logger::trace('getSubCategorieListByUserId(): Datensatz erzeugt: ID=' . $row[FIELD_ID] . ' NAME=' . $row[FIELD_NAME] . ' USERID=' . $row[FIELD_USERID] . ' COLOR=' . $row[FIELD_COLOR] . ' PARENT=' . $row[FIELD_PARENT]);
@@ -93,7 +95,7 @@ function getNumberOfBookmarksById($id, $userid) :int {
     return sizeof($bookmarks);
   }
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO(PROJECT_DATABASE) or die (FAILED_OPEN_DB);
   $sql = "SELECT ID, CATEGORYID, USERID, NAME, URL, TAGS FROM BOOKMARK WHERE CATEGORYID = :id AND USERID = :userid";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_ID, $id);
@@ -121,7 +123,7 @@ function checkLogin($username, $password): string {
 
   Logger::trace('checkLogin(): username: ' . $username . ' password: ' . $password);
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO(PROJECT_DATABASE) or die (FAILED_OPEN_DB);
   $sql = "SELECT ID, NAME, EMAIL, PASS, VERIFIED, CREATED, LASTLOGIN FROM USER WHERE (NAME = '" . $username . "' OR EMAIL = '" . $username . "') AND LOWER(PASS) = '" . strtolower($password) . "'";
   $results = $db->query($sql);
   Logger::trace('checkLogin(): Folgender SQL wird ausgefuehrt: ' . $sql);
@@ -137,7 +139,6 @@ function checkLogin($username, $password): string {
     Logger::trace("checkLogin(): User gefunden, Ergebnis in SessionCookie speichern");
 
     session_start();
-//    session_set_cookie_params(time() + 86400);
 
     $_SESSION['userdata'] = $ergebnis[1];
 
@@ -156,7 +157,7 @@ function getUserNameAndPassFromToken($userid, $token): array {
 
   Logger::trace('getUserNameAndPassFromToken(): USERID: ' . $userid . ' TOKEN: ' . $token);
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO(PROJECT_DATABASE) or die (FAILED_OPEN_DB);
   $sql = "SELECT NAME, PASS FROM USER WHERE ID = '" . $userid . "' AND TOKEN = '" . hash('sha1', $token) . "'";
   $results = $db->query($sql);
   Logger::trace('getUserNameAndPassFromToken(): Folgender SQL wird ausgefuehrt: ' . $sql);
@@ -189,18 +190,18 @@ function getCategoryNameById($catid, $userid) {
     return $categorieName;
   }
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO(PROJECT_DATABASE) or die (FAILED_OPEN_DB);
   $sql = "SELECT NAME FROM CATEGORY WHERE ID = :catid AND USERID = :userid";
   $stmt = $db -> prepare($sql);
-  $stmt -> bindParam(':catid', $catid);
-  $stmt -> bindParam(':userid', $userid);
+  $stmt -> bindParam(PARAM_CATID, $catid);
+  $stmt -> bindParam(PARAM_USERID, $userid);
 
   Logger::trace('getCategoryNameById(): Folgender SQL wird ausgefuehrt: ' . $sql);
 
   $stmt -> execute();
   $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
-  foreach($res as $row) {
+  foreach ($res as $row) {
     $categorieName = $row['NAME'];
 
     Logger::trace('getCategoryNameById(): Datensatz erzeugt: NAME=' . $categorieName);
@@ -228,18 +229,18 @@ function getBookmarksByCategoryId($categoryid, $userid): array {
     return $bookmarks;
   }
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO(PROJECT_DATABASE) or die (FAILED_OPEN_DB);
   $sql = "SELECT ID, CATEGORYID, USERID, NAME, URL, TAGS FROM BOOKMARK WHERE CATEGORYID = :catid AND USERID = :userid ORDER BY ID DESC";
   $stmt = $db -> prepare($sql);
-  $stmt -> bindParam(':catid', $categoryid);
-  $stmt -> bindParam(':userid', $userid);
+  $stmt -> bindParam(PARAM_CATID, $categoryid);
+  $stmt -> bindParam(PARAM_USERID, $userid);
 
   Logger::trace('getBookmarksByCategoryId(): Folgender SQL wird ausgefuehrt: ' . $sql);
 
   $stmt -> execute();
   $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
-  foreach($res as $row) {
+  foreach ($res as $row) {
     $bookmarks[] = ['ID' => $row['ID'], 'CATEGORYID' => $row['CATEGORYID'], 'USERID' => $row['USERID'], 'NAME' => $row['NAME'], 'URL' => $row['URL'], 'TAGS' => $row['TAGS']];
 
     Logger::trace('getCategorieListByUserId(): Datensatz erzeugt: ID=' . $row['ID'] . ' CATEGORYID=' . $row['CATEGORYID'] . ' USERID=' . $row['USERID'] . ' NAME=' . $row['NAME'] . ' URL=' . $row['URL'] . ' TAGS=' . $row['TAGS']);
@@ -276,7 +277,7 @@ function getParameter($parametername, $userid): string {
   $param = [];
   $paramValue = '';
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO(PROJECT_DATABASE) or die (FAILED_OPEN_DB);
   $sql = "SELECT ID, NAME, VALUE, USERID FROM PARAMETER WHERE NAME = :parametername";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(':parametername', $parametername);
@@ -286,7 +287,7 @@ function getParameter($parametername, $userid): string {
   $stmt -> execute();
   $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
-  foreach($res as $row) {
+  foreach ($res as $row) {
     $param[] = ['ID' => $row['ID'], 'NAME' => $row['NAME'], 'VALUE' => $row['VALUE'], 'USERID' => $row['USERID']];
 
     Logger::trace('getParameter(): Datensatz erzeugt: ID=' . $row['ID'] . ' NAME=' . $row['NAME'] . ' VALUE=' . $row['VALUE'] . ' USERID=' . $row['USERID']);
@@ -362,7 +363,7 @@ function categoryExists($categoryName, $userid): bool {
     return $categoryExists;
   }
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "SELECT ID, NAME, USERID, COLOR FROM CATEGORY WHERE LOWER(NAME) = :catName AND USERID = :userid";
   $stmt = $db -> prepare($sql);
   $catInLowerCase = strtolower($categoryName);
@@ -431,7 +432,7 @@ function validateColor($color): bool {
 function addNewCategory($categoryname, $color, $userid, $parentcategoryid):bool {
   Logger::trace('addNewCategory(): Enter -> CATEGORYNAME=' . $categoryname . ' COLOR=' . $color . ' USERID=' . $userid . ' PARENTID=' . $parentcategoryid);
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "INSERT INTO CATEGORY (NAME, USERID, COLOR, PARENT) VALUES (:categoryname, :userid, :color, :parent)";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(':categoryname', $categoryname);
@@ -489,7 +490,7 @@ function addNewUser(string $username, string $email, string $password, string $p
 
   $created = $today . ' ' . $time;
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "INSERT INTO USER (NAME, EMAIL, PASS, VERIFIED, CREATED) VALUES (:username, :email, :pass, '1', :created)";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_USERNAME, $username);
@@ -522,7 +523,7 @@ function updateLastLogin(string $userid): bool {
 
   Logger::trace("updateLastLogin(): Setze LastLogin auf " . $created . ' fuer UserId=' . $userid);
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "UPDATE USER SET LASTLOGIN = :lastlogin WHERE ID = :userid";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_LASTLOGIN, $created);
@@ -550,7 +551,7 @@ function updateLastLoginWithUsernameAndPass(string $username, string $password):
 function getUserIdFromUsernameAndPass(string $username, string $password): int {
   Logger::trace('getUserIdFromUsernameAndPass(): Entry -> USERNAME=' . $username . ' PASS=' . $password);
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "SELECT ID, NAME, EMAIL, PASS, VERIFIED, CREATED, LASTLOGIN FROM USER WHERE NAME = '" . $username . "' AND LOWER(PASS) = '" . $password . "'";
   $results = $db->query($sql);
   Logger::trace('getUserIdFromUsernameAndPass(): Folgender SQL wird ausgefuehrt: ' . $sql);
@@ -579,7 +580,7 @@ function addNewBookmark(string $newBookmarkName, string $newBookmarkUrl, string 
 
   $newPosition = getNextPositionIdOfCategory($newBookmarkCatId, $newBookmarkUserId);
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "INSERT INTO BOOKMARK (CATEGORYID, USERID, NAME, URL, TAGS, POSITION) VALUES (:catid, :userid, :name, :url, :tags, :position)";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_CATID, $newBookmarkCatId);
@@ -607,7 +608,7 @@ function addNewBookmark(string $newBookmarkName, string $newBookmarkUrl, string 
 function getNextPositionIdOfCategory($categoryid, $userid) {
   Logger::trace('getNextPositionIdOfCategory(): Naechste freie PositionsId ermitteln: CATEGORY=' . $categoryid . ' USERID=' . $userid);
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "SELECT POSITION FROM BOOKMARK WHERE CATEGORYID = :catid AND USERID = :userid ORDER BY POSITION DESC LIMIT 1";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_CATID, $categoryid);
@@ -631,7 +632,7 @@ function getNextPositionIdOfCategory($categoryid, $userid) {
 function deleteBookmark($bookmarkid, $userid, $catid): bool {
   Logger::trace('deleteBookmark(): Enter -> BOOKMARKID=' . $bookmarkid . ' USERID=' . $userid . ' CATID=' . $catid);
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "DELETE FROM BOOKMARK WHERE ID = :bookmarkid AND CATEGORYID = :catid AND USERID = :userid";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_BOOKMARKID, $bookmarkid);
@@ -661,7 +662,7 @@ function deleteCategory($userid, $catid): bool {
     return false;
   }
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "DELETE FROM CATEGORY WHERE ID = :catid AND USERID = :userid";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_CATID, $catid);
@@ -688,7 +689,7 @@ function deleteCategory($userid, $catid): bool {
 function moveBookmnarksFromCategoryToDefault($userid, $catid): int {
   Logger::trace('moveBookmnarksFromCategoryToDefault(): Enter -> USERID=' . $userid . ' CATID=' . $catid);
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "UPDATE BOOKMARK SET CATEGORYID = 0 WHERE USERID = :userid AND CATEGORYID = :catid";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_CATID, $catid);
@@ -755,7 +756,7 @@ function createAddBookmarkCookie(string $title, string $url): void {
 function updateUserToken(string $userid, string $token): void {
   Logger::trace('updateUserToken(): Enter -> USERID=' . $userid . ' TOKEN=' . $token);
 
-  $db = new PDO('sqlite:db/bookmarkservice.db') or die ("failed to open db");
+  $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
   $sql = "UPDATE USER SET TOKEN = :token WHERE ID = :userid";
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_TOKEN, $token);
