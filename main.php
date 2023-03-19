@@ -41,10 +41,94 @@ if (isset($_POST["submit"])) {
   <script src="externals/default.js"></script>
   <script>
       $(document).ready(function(){
-          $("#btnClick").click(function(){
-              alert("Hello! I am an alert box!!");
+          $('#search').keyup(function() {
+              const query = $(this).val();
+              $.ajax({
+                  url: 'search.php',
+                  method: 'POST',
+                  data: { query: query },
+                  success: function(response) {
+                      $('#search-results').html(response);
+                  }
+              });
           });
       });
+
+      document.onkeyup = function(e) {
+          if (e.altKey && e.which === 87) {
+              document.getElementById('search').focus();
+          }
+
+          if (e.which === 27) {
+              deleteSearchData();
+          }
+      };
+
+      function onkeypressed(evt, input) {
+          const code = evt.charCode || evt.keyCode;
+          if (code === 27) {
+              input.value = '';
+          }
+      }
+
+      function focusFirstEntry(evt) {
+          const code = evt.charCode || evt.keyCode;
+
+          if (code === 40) {
+              evt.preventDefault();
+
+              document.getElementById('search-results').getElementsByTagName('a')[0].focus();
+          }
+      }
+
+      function fucusNextEntry(evt, input) {
+          const code = evt.charCode || evt.keyCode;
+
+          // Pfeil nach oben
+          const isUp = code === 38;
+
+          // Pfeil nach unten
+          const isDown = code === 40;
+
+          if (isUp || isDown) {
+              evt.preventDefault();
+
+              const list = document.getElementById('search-results').getElementsByTagName('a');
+
+              let indexOfActiveElement = -1;
+
+              for (let i = 0; i < list.length; i++) {
+                  if (list[i] === document.activeElement) {
+                      indexOfActiveElement = i;
+                  }
+              }
+
+              if (isUp && indexOfActiveElement !== -1) {
+                  if (indexOfActiveElement - 1 >= 0) {
+                      indexOfActiveElement -= 1;
+                  } else {
+                      indexOfActiveElement = list.length - 1;
+                  }
+              } else if (isDown && indexOfActiveElement !== -1 && indexOfActiveElement + 1 < list.length) {
+                  indexOfActiveElement += 1;
+              } else {
+                  indexOfActiveElement = 0;
+              }
+
+              list[indexOfActiveElement].focus();
+          }
+
+          closeAndDeleteSearchData(evt);
+      }
+
+      function closeAndDeleteSearchData(evt) {
+          const code = evt.charCode || evt.keyCode;
+
+          if (code === 27) {
+              deleteSearchData();
+              document.getElementById('search').focus();
+          }
+      }
 
       setTimeout(function() {
           $('#alert').fadeOut('fast');
@@ -88,7 +172,6 @@ if (isset($_POST['delete_bookmark_bookmarkid']) && isset($_POST['delete_bookmark
   }
 }
 
-
 if (isset($_GET['category']) && isset($_GET['color'])) {
   $categoryname = $_GET['category'];
   $parentcategoryid = $_GET['parentcategoryid'];
@@ -104,7 +187,6 @@ if (isset($_GET['category']) && isset($_GET['color'])) {
     }
   }
 }
-
 
 if (isset($_POST['delete-category-catid']) && isset($_POST['delete-category-userid'])) {
   $catid = $_POST['delete-category-catid'];
@@ -124,11 +206,8 @@ if (isset($_POST['delete-category-catid']) && isset($_POST['delete-category-user
   }
 }
 
-
 $basetarget = getParameter(BASETARGET, $userdata['ID']);
 ?>
-
-
 
 <div class="column-left">
   <div class="column-header-left">
@@ -197,7 +276,6 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
           foreach ($subcategories as $subrow) {
             echo '<li style="padding-left:15px;">';
             echo '  <div class="subcategory-entry">';
-//            echo '    <div class="category-bullet" style="background-color: ' . $row['COLOR'] . ';"></div>';
             echo '    <div class="category-name"><i style="color: ' . $subrow['COLOR'] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="main.php?cat=' . $subrow['ID'] . '">' . $subrow['NAME'] . '</a></div>';
             echo '    <div class="category-number">' . getNumberOfBookmarksById($subrow['ID'], $userdata['ID']) . '</div>';
             echo '  </div>';
@@ -243,6 +321,10 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
       <input type="hidden" id="delete-category-userid" name="delete-category-userid" value="<?php echo $userdata['ID'];?>">
       <button type="submit" class="delete-category" style="<?php echo !isset($categoryId) || $categoryId == "0" || $categoryId == 0 ? 'display:none;' : '' ;?>" title="INFO: Alle Bookmarks der gelöschten Kategorie werden der Default-Kategorie zugewiesen!"><i class="fa-solid fa-trash-can"></i></button>
     </form>
+
+    <input type="text" onkeydown="focusFirstEntry(event, this);closeAndDeleteSearchData(event);" id="search" placeholder="Alle Bookmarks durchsuchen [ALT + W] ...">
+    <button class="deleteSearchBoxIcon" onclick="deleteSearchData();"><i class="fa-solid fa-trash-can"></i></button>
+    <div id="search-results" style="display:none;" onkeydown="fucusNextEntry(event);"></div>
 
     <div class="user-panel">
       <div class="user-icon-box">
@@ -314,7 +396,7 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
 
     <div class="upload-overlay" title="Bookmark hinzufügen">
       <div class="add-bookmark-icon">
-        <a onclick="showAddBookmarkModal();"><img src="images/add_bookmark.png" alt="Add Bookmark" class="add-bookmark-icon"></a>
+        <a onclick="showAddBookmarkModal();deleteSearchData();"><img src="images/add_bookmark.png" alt="Add Bookmark" class="add-bookmark-icon"></a>
       </div>
     </div>
 
@@ -374,7 +456,7 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
         <button class="btn btn-submit" disabled="disabled" type="submit" id="submitNewBookmark" title="Bookmark hinzufügen">Hinzufügen</button>
       </div>
     </div>
-    </form>
+    <?php echo '</form>';?>
 
   </div>
 </div>
