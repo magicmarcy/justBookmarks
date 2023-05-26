@@ -134,6 +134,8 @@ function checkLogin($username, $password): string {
     $ergebnis[] = $row;
   }
 
+  $db = null;
+
   // Da hier auch ein leerer Satz ein Ergebnis ist, muss das Array exakt 2 groß sein, damit der User mit dem Pass gefunden wurde
   if (count($ergebnis) === 2) {
     Logger::trace("checkLogin(): User gefunden, Ergebnis in SessionCookie speichern");
@@ -167,6 +169,8 @@ function getUserNameAndPassFromToken($userid, $token): array {
   while ($row = $results->fetch(PDO::FETCH_ASSOC)) {
     $ergebnis[] = $row;
   }
+
+  $db = null;
 
   // Da hier auch ein leerer Satz ein Ergebnis ist, muss das Array exakt 2 groß sein, damit der User mit dem Pass gefunden wurde
   if (count($ergebnis) === 2) {
@@ -287,6 +291,8 @@ function getParameter($parametername, $userid): string {
   $stmt -> execute();
   $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
+  $db = null;
+
   foreach ($res as $row) {
     $param[] = ['ID' => $row['ID'], 'NAME' => $row['NAME'], 'VALUE' => $row['VALUE'], 'USERID' => $row['USERID']];
 
@@ -393,19 +399,19 @@ function validateCategory($category, $userid): bool {
     Logger::trace("validateCategory(): Kategorie darf nicht leer sein!");
     echo '<div id="alert" class="alert alert-danger" role="alert">Du musst einen Kategorienamen angeben!</div>';
     return false;
-  } else if (hasForbiddenCharsInCategoryname($category)) {
+  } elseif (hasForbiddenCharsInCategoryname($category)) {
     Logger::trace("validateCategory(): Verbotene Zeichen enthalten");
     echo '<div id="alert" class="alert alert-danger" role="alert">Der Kategoriename darf keine Sonderzeichen enthalten!</div>';
     return false;
-  } else if (strlen($category) > CAT_MAX_CHARS) {
+  } elseif (strlen($category) > CAT_MAX_CHARS) {
     Logger::trace("validateCategory(): Kategoriename ist zu lang! +++ Achtung! +++ Vermutlich Request-Manipulation!!!!");
     echo '<div id="alert" class="alert alert-danger" role="alert">Der Kategoriename darf nur ' . CAT_MAX_CHARS . ' Zeichen enthalten!</div>';
     return false;
-  } else if (strtolower($category) == 'default') {
+  } elseif (strtolower($category) == 'default') {
     Logger::trace("validateCategory(): Kategorie darf nicht default heissen!");
     echo '<div id="alert" class="alert alert-danger" role="alert">Du kannst keine weitere Kategorie mit dem Namen "Default" anlegen!</div>';
     return false;
-  } else if (categoryExists($category, $userid)) {
+  } elseif (categoryExists($category, $userid)) {
     Logger::trace("validateCategory(): Kategorie existiert bereits");
     echo '<div id="alert" class="alert alert-danger" role="alert">Kategorie existiert bereits!</div>';
     return false;
@@ -443,6 +449,8 @@ function addNewCategory($categoryname, $color, $userid, $parentcategoryid):bool 
   Logger::trace('getParameter(): Folgender SQL wird ausgefuehrt: ' . $sql);
 
   $stmt -> execute();
+
+  $db = null;
 
   return true;
 }
@@ -504,6 +512,8 @@ function addNewUser(string $username, string $email, string $password, string $p
 
   $id = $db->lastInsertId();
 
+  $db = null;
+
   if (!is_numeric($id) || $id <= 0) {
     Logger::error("addNewUser(): Fehler beim Anlegen des neuen Users! Bitte Log beachten!");
     return false;
@@ -532,6 +542,8 @@ function updateLastLogin(string $userid): bool {
   Logger::trace('updateLastLogin(): Folgender SQL wird ausgefuehrt: ' . $sql);
 
   $result = $stmt -> execute();
+
+  $db = null;
 
   if (!$result) {
     Logger::error("updateLastLogin(): Fehler beim updaten des aktuellen Logins!");
@@ -562,9 +574,9 @@ function getUserIdFromUsernameAndPass(string $username, string $password): int {
     $ergebnis[] = ['ID' => $row['ID'], 'NAME' => $row['NAME'], 'EMAIL' => $row['EMAIL'], 'PASS' => $row['PASS'], 'VERIFIED' => $row['VERIFIED'], 'CREATED' => $row['CREATED'], 'LASTLOGIN' => $row['LASTLOGIN']];
   }
 
-  if (count($ergebnis) === 2) {
-    // var_dump($ergebnis);
+  $db = null;
 
+  if (count($ergebnis) === 2) {
     $newUserId = $ergebnis[1]['ID'];
     Logger::trace("getUserIdFromUsernameAndPass(): EXIT -> " . $newUserId);
     return (int) $newUserId;
@@ -596,6 +608,8 @@ function addNewBookmark(string $newBookmarkName, string $newBookmarkUrl, string 
 
   $id = $db->lastInsertId();
 
+  $db = null;
+
   if (!is_numeric($id) || $id <= 0) {
     Logger::error("addNewBookmark(): Fehler beim Anlegen des neuen Users! Bitte Log beachten!");
     return false;
@@ -616,6 +630,8 @@ function getNextPositionIdOfCategory($categoryid, $userid) {
   $stmt -> execute();
 
   $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+  $db = null;
 
   $lastPosition = 0;
   if ($res) {
@@ -644,6 +660,8 @@ function deleteBookmark($bookmarkid, $userid, $catid): bool {
   $stmt -> execute();
 
   $rowCount = $stmt->rowCount();
+
+  $db = null;
 
   if ($rowCount != 1) {
     Logger::error("deleteBookmark(): Fehler beim Löschen des Bookmarks! Bitte Log beachten!");
@@ -674,6 +692,8 @@ function deleteCategory($userid, $catid): bool {
 
   $rowCount = $stmt->rowCount();
 
+  $db = null;
+
   if ($rowCount != 1) {
     Logger::error("deleteCategory(): Fehler beim Löschen des Bookmarks! Bitte Log beachten!");
     return false;
@@ -700,6 +720,8 @@ function moveBookmnarksFromCategoryToDefault($userid, $catid): int {
   $stmt -> execute();
 
   $rowCount = $stmt->rowCount();
+
+  $db = null;
 
   if ($rowCount < 0) {
     Logger::error("moveBookmnarksFromCategoryToDefault(): Fehler beim Verschieben der Bookmarks! Bitte Log beachten!");
@@ -753,7 +775,8 @@ function createAddBookmarkCookie(string $title, string $url): void {
  * Aktualisieren des User-Tokens. Wir muessen hier nichts zurueck bekommen weil es uns egal ist
  * ob das funktioniert hat. Im Zweifel muss sich der User neu einloggen.
  */
-function updateUserToken(string $userid, string $token): void {
+function updateUserToken(string $userid, string $token): void
+{
   Logger::trace('updateUserToken(): Enter -> USERID=' . $userid . ' TOKEN=' . $token);
 
   $db = new PDO('sqlite:db/bookmarkservice.db') or die (FAILED_OPEN_DB);
@@ -768,14 +791,18 @@ function updateUserToken(string $userid, string $token): void {
 
   $rowCount = $stmt->rowCount();
 
+  $db = null;
+
   if ($rowCount < 0) {
     Logger::error("updateUserToken(): Fehler beim Verschieben der Bookmarks! Bitte Log beachten!");
+    return;
   }
 
   Logger::trace("updateUserToken(): " . $rowCount . " Bookmark erfolgreich zur Default-Kategorie verschoben!");
 }
 
-function generateRandomString(): string {
+function generateRandomString(): string
+{
     $length = 25;
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
@@ -882,5 +909,64 @@ function urlExists(string $url): bool {
  * @return string the replaced string
  */
 function formatString(string $word, array $vars = array()): string {
-  return isset($word) ? vsprintf($word, $vars) : $word;
+  return vsprintf($word, $vars) ?? $word;
+}
+
+function isSubSubCategory(string $cat, string $userid): bool
+{
+  Logger::trace("CategoryId=" . $cat .  " UserId=" . $userid);
+
+  if ($cat == "0") {
+    Logger::trace("Kategorie 0 (Default) wird uebersprungen...");
+    return false;
+  }
+
+  $category = getCategory($cat, $userid);
+
+  if (empty($category) || empty($category[0])) {
+    return false;
+  }
+
+  if (empty($category[0]['PARENT']) || $category[0]['PARENT'] == "0") {
+    return false;
+  }
+
+  $parentCategory = getCategory($category[0]['PARENT'], $userid);
+
+  if (empty($parentCategory) || empty($parentCategory[0])) {
+    return false;
+  }
+
+  if (empty($parentCategory[0]['PARENT']) || $parentCategory[0]['PARENT'] == 0) {
+    return false;
+  }
+
+  return true;
+}
+
+function getCategory(string $catId, string $userId): array
+{
+  Logger::trace("CatId=" . $catId . " UserId=" . $userId);
+
+  $ergebnis = null;
+  $db = new PDO(PROJECT_DATABASE) or die (FAILED_OPEN_DB);
+  $sql = "SELECT ID, NAME, USERID, COLOR, PARENT FROM CATEGORY WHERE ID = :catid AND USERID = :userid";
+  $stmt = $db->prepare($sql);
+  $stmt->bindParam(PARAM_CATID, $catId);
+  $stmt->bindParam(PARAM_USERID, $userId);
+
+  Logger::trace($sql);
+
+  $stmt->execute();
+
+  // alle eingelesenen Datensätze ausgeben
+  while ($row = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
+    $ergebnis = $row;
+
+    Logger::trace('Datensatz gefunden: ' . json_encode($row));
+  }
+
+  $db = null;
+
+  return $ergebnis;
 }

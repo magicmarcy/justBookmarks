@@ -64,6 +64,9 @@ if (isset($_POST["submit"])) {
                   }
               });
           });
+
+          // Default set the focus into the searchfield
+          document.getElementById('search').focus();
       });
 
       document.onkeyup = function(e) {
@@ -278,7 +281,7 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
           echo '<li>';
           echo '  <div class="category-entry">';
           echo '    <div class="category-bullet" style="background-color: ' . $row['COLOR'] . ';"></div>';
-          echo '    <div class="category-name"><a href="main.php?cat=' . $row['ID'] . '" onclick="saveScroll();">' . $row['NAME'] . '</a></div>';
+          echo '    <div class="category-name cat-short one"><a href="main.php?cat=' . $row['ID'] . '" onclick="saveScroll();">' . $row['NAME'] . '</a></div>';
           echo '    <div class="category-number">' . getNumberOfBookmarksById($row['ID'], $userdata['ID']) . '</div>';
           echo '  </div>';
           echo '</li>';
@@ -288,10 +291,21 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
           foreach ($subcategories as $subrow) {
             echo '<li style="padding-left:15px;">';
             echo '  <div class="subcategory-entry">';
-            echo '    <div class="category-name"><i style="color: ' . $subrow['COLOR'] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="main.php?cat=' . $subrow['ID'] . '" onclick="saveScroll();">' . $subrow['NAME'] . '</a></div>';
+            echo '    <div class="category-name cat-short two"><i style="color: ' . $subrow['COLOR'] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="main.php?cat=' . $subrow['ID'] . '" onclick="saveScroll();">' . $subrow['NAME'] . '</a></div>';
             echo '    <div class="category-number">' . getNumberOfBookmarksById($subrow['ID'], $userdata['ID']) . '</div>';
             echo '  </div>';
             echo '</li>';
+
+            $subsubcategories = getSubCategorieListByUserId($userdata['ID'], $subrow['ID']);
+
+            foreach ($subsubcategories as $subsubrow) {
+              echo '<li style="padding-left:30px;">';
+              echo '  <div class="subsubcategory-entry">';
+              echo '    <div class="category-name cat-short three"><i style="color: ' . $subsubrow['COLOR'] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="main.php?cat=' . $subsubrow['ID'] . '">' . $subsubrow['NAME'] . '</a></div>';
+              echo '    <div class="category-number">' . getNumberOfBookmarksById($subsubrow['ID'], $userdata['ID']) . '</div>';
+              echo '  </div>';
+              echo '</li>';
+            }
           }
         }
       }

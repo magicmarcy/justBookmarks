@@ -19,16 +19,21 @@
         <div class="col-sm-10">
           <select id="parentcategoryid" style="width:600px;" name="parentcategoryid" class="cat-dropdown">
             <?php
-            $categories = getCategorieListByUserId($userdata['ID'], false);
-            array_push($categories, ['ID' => '0', 'NAME' => 'Keine', 'USERID' => $userdata['ID'], 'COLOR' => '#ff5733']);
+            $categories = getCategorieListByUserId($userdata['ID'], true);
+            $categories[] = ['ID' => '0', 'NAME' => 'Keine', 'USERID' => $userdata['ID'], 'COLOR' => '#ff5733'];
 
             foreach ($categories as $cat) {
+              if (isSubSubCategory($cat['ID'], $userdata['ID'])) {
+                Logger::trace("Kategorie '" . $cat['NAME'] . "' ist SubSubCategory und wird uebersprungen...");
+                continue;
+              }
+
               if ($cat['ID'] == '0') {
                 echo '<option value="' . $cat['ID'] . '" selected="true">' . $cat['NAME'] . '</option>';
               } else {
                 echo '<option value="' . $cat['ID'] . '">' . $cat['NAME'] . '</option>';
               }
-            }; ?>
+            } ?>
           </select>
         </div>
       </div>
