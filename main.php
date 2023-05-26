@@ -31,15 +31,27 @@ if (isset($_POST["submit"])) {
   <meta name="description" content="<?php echo PROJECTSHORTDESC; ?>">
   <link rel="icon" href="images/logo.png" type="image/png">
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet"
-        href="externals/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="externals/fontawesome/6.0.0/fontawesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <script src="externals/jquery/3.6.3/jquery-3.6.3.min.js"></script>
   <script src="externals/default.js"></script>
   <script>
+      // Beim Laden der Seite
+      window.addEventListener("DOMContentLoaded", function() {
+          // Abrufen der gespeicherten Scrollposition aus dem Browser-Speicher
+          let scrollPosition = localStorage.getItem("scrollPosition");
+
+          // Überprüfen, ob eine gespeicherte Scrollposition vorhanden ist
+          if (scrollPosition !== null) {
+              // Wiederherstellen der Scrollposition des linken DIVs
+              document.getElementById("content-left").scrollTop = scrollPosition;
+
+              // Löschen der gespeicherten Scrollposition aus dem Browser-Speicher
+              localStorage.removeItem("scrollPosition");
+          }
+      });
+
       $(document).ready(function(){
           $('#search').keyup(function() {
               const query = $(this).val();
@@ -247,13 +259,13 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
     <div class="project-name"><?php echo PROJECTNAME; ?></div>
     <div class="project-version"><a href="<?php echo GITHUB_RELEASEINFO;?>" target="_blank" title="Releaseinfo @github"><?php echo PROJECTVERSION; ?></a></div>
   </div>
-  <div class="demo-content">
+  <div id="content-left" class="demo-content">
     <div class="category-headline">KATEGORIEN <button id="addCatBtn" class="fa-upl-button" title="Kategorie hinzufügen"><i class="fa-solid fa-circle-plus"></i></button></div>
     <ul class="category-list">
       <li>
         <div class="category-entry">
           <div class="category-bullet" style="background-color: red;"></div>
-          <div class="category-name"><a href="main.php">Default</a></div>
+          <div class="category-name"><a href="main.php" onclick="saveScroll();">Default</a></div>
           <div class="category-number"><?php echo getNumberOfBookmarksById(0, $userdata['ID']);?></div>
         </div>
       </li>
@@ -266,7 +278,7 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
           echo '<li>';
           echo '  <div class="category-entry">';
           echo '    <div class="category-bullet" style="background-color: ' . $row['COLOR'] . ';"></div>';
-          echo '    <div class="category-name"><a href="main.php?cat=' . $row['ID'] . '">' . $row['NAME'] . '</a></div>';
+          echo '    <div class="category-name"><a href="main.php?cat=' . $row['ID'] . '" onclick="saveScroll();">' . $row['NAME'] . '</a></div>';
           echo '    <div class="category-number">' . getNumberOfBookmarksById($row['ID'], $userdata['ID']) . '</div>';
           echo '  </div>';
           echo '</li>';
@@ -276,7 +288,7 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
           foreach ($subcategories as $subrow) {
             echo '<li style="padding-left:15px;">';
             echo '  <div class="subcategory-entry">';
-            echo '    <div class="category-name"><i style="color: ' . $subrow['COLOR'] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="main.php?cat=' . $subrow['ID'] . '">' . $subrow['NAME'] . '</a></div>';
+            echo '    <div class="category-name"><i style="color: ' . $subrow['COLOR'] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="main.php?cat=' . $subrow['ID'] . '" onclick="saveScroll();">' . $subrow['NAME'] . '</a></div>';
             echo '    <div class="category-number">' . getNumberOfBookmarksById($subrow['ID'], $userdata['ID']) . '</div>';
             echo '  </div>';
             echo '</li>';
