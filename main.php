@@ -64,6 +64,9 @@ if (isset($_POST["submit"])) {
                   }
               });
           });
+
+          // Default set the focus into the searchfield
+          document.getElementById('search').focus();
       });
 
       document.onkeyup = function(e) {
