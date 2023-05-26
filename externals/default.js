@@ -69,3 +69,7 @@ function clearInputs() {
     let submitButton = document.getElementById('submitNewBookmark');
     submitButton.setAttribute('disabled', 'disabled');
 }
+
+function saveScroll() {
+    localStorage.setItem("scrollPosition", document.getElementById("content-left").scrollTop);
+}
