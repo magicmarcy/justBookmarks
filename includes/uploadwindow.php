@@ -17,19 +17,25 @@
     const spanUp = document.getElementsByClassName("closeUpload")[0];
 
     // When the user clicks the button, open the modal
-    btnUpload.onclick = function() {
-        modalupload.style.display = "block";
+    if (btnUpload && modalupload) {
+        btnUpload.onclick = function () {
+            modalupload.style.display = "block";
+        }
     }
 
     // When the user clicks on <span> (x), close the modal
-    spanUp.onclick = function() {
-        modalupload.style.display = "none";
+    if (spanUp && modalupload) {
+        spanUp.onclick = function () {
+            modalupload.style.display = "none";
+        }
     }
 
     // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modalupload) {
-            modalupload.style.display = "none";
+    if (modalupload) {
+        window.onclick = function (event) {
+            if (event.target === modalupload) {
+                modalupload.style.display = "none";
+            }
         }
     }
 </script>

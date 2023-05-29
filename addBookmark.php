@@ -8,11 +8,11 @@ session_start();
 /* initial loeschen wir ein moegliches Cookie */
 deleteAddCookie();
 
-if ($_SESSION['login'] != OKAY) {
-  Logger::trace('main(): Login falsch! Weiterleitung zu Header-Location->' . PROJECT_STARTPAGE);
+if ($_SESSION[SESSION_LOGIN] != OKAY) {
+  Logger::trace('Login falsch! Weiterleitung zu Header-Location->' . PROJECT_STARTPAGE);
 
-  if (isset($_GET["title"]) && isset($_GET["url"])) {
-    createAddBookmarkCookie($_GET["title"], $_GET["url"]);
+  if (isset($_GET[GET_TITLE]) && isset($_GET[GET_URL])) {
+    createAddBookmarkCookie($_GET[GET_TITLE], $_GET[GET_URL]);
   }
 
   header("Location: " . PROJECT_STARTPAGE);
@@ -20,66 +20,60 @@ if ($_SESSION['login'] != OKAY) {
   deleteAddCookie();
 }
 
-$userdata = $_SESSION['userdata'];
+$userdata = $_SESSION[SESSION_USERDATA];
 
-Logger::trace("init(): Login: ID=" . $userdata['ID'] . " NANE=" . $userdata['NAME'] . " EMAIL=" . $userdata['EMAIL'] . " PASS=" . $userdata['PASS'] . " VERIFIED=" . $userdata['VERIFIED'] . " CREATED=" . $userdata['CREATED'] . " LASTLOGIN=" . $userdata['LASTLOGIN']);
+Logger::trace("Login: ID=" . json_encode($userdata));
 
-if (isset($_POST['categoryid']) && isset($_POST['name']) && isset($_POST['url'])) {
-  $addCatId = $_POST['categoryid'];
-  $addTitle = $_POST['name'];
-  $addUrl = $_POST['url'];
-  $addTags = $_POST['tags'];
+if (isset($_POST[POST_CATEGORYID]) && isset($_POST[POST_NAME]) && isset($_POST[POST_URL])) {
+  $addCatId = $_POST[POST_CATEGORYID];
+  $addTitle = $_POST[POST_NAME];
+  $addUrl = $_POST[POST_URL];
+  $addTags = $_POST[POST_TAGS];
 
-  Logger::trace("addBookmark(): POST->addCatId: " . $addCatId . ", addTitle: " . $addTitle . " addUrl: " . $addUrl);
+  Logger::trace("POST->addCatId: " . $addCatId . ", addTitle: " . $addTitle . " addUrl: " . $addUrl);
 
-  $addResult = addNewBookmark($addTitle, $addUrl, $addTags, $addCatId, $userdata['ID']);
+  $addResult = addNewBookmark($addTitle, $addUrl, $addTags, $addCatId, $userdata[FIELD_ID]);
 
   if ($addResult) {
     echo '<script type="text/JavaScript">window.close()</script>';
   } else {
-    echo '<div id="alert" class="alert alert-info" role="alert">Fehler beim Hinzufügen des Bookmarks!</div>';
+    showError('Fehler beim Hinzufügen des Bookmarks!');
   }
 }
 
 $title = "";
 $url = "";
 
-if (isset($_GET["title"])) {
-  $title = $_GET["title"];
-  Logger::trace("addBookmark(): GET->title: " . $title);
+if (isset($_GET[GET_TITLE])) {
+  $title = $_GET[GET_TITLE];
+  Logger::trace("GET->title: " . $title);
 }
 
-if (isset($_GET["url"])) {
-  $url = $_GET["url"];
-  Logger::trace("addBookmark(): GET->url: " . $url);
+if (isset($_GET[GET_URL])) {
+  $url = $_GET[GET_URL];
+  Logger::trace("GET->url: " . $url);
 }
 
-$categories = getCategorieListByUserId($userdata['ID'], true);
-array_push($categories, ['ID' => '0', 'NAME' => 'Default', 'USERID' => $userdata['ID'], 'COLOR' => '#ff5733']);
+$categories = getCategorieListByUserId($userdata[FIELD_ID], true);
+$categories[] = ['ID' => '0', 'NAME' => 'Default', 'USERID' => $userdata[FIELD_ID], 'COLOR' => '#ff5733'];
 
-$sorted = array_column($categories, 'NAME');
+$sorted = array_column($categories, FIELD_NAME);
 array_multisort($sorted, SORT_ASC, $categories);
 ?>
 <!DOCTYPE html>
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <title><?php echo PROJECTSHORTDESC; ?></title>
-  <meta name="description" content="<?php echo PROJECTSHORTDESC; ?>">
+  <title><?=PROJECTSHORTDESC;?></title>
+  <meta name="description" content="<?=PROJECTSHORTDESC;?>">
   <link rel="icon" href="images/logo.png" type="image/png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oleo+Script+Swash+Caps&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-        crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="externals/default.js"></script>
+  <?=GOOGLE_FONTS;?>
+  <link rel="stylesheet" href="<?=STYLE_DEFAULT_CSS;?>">
+  <link rel="stylesheet" href="<?=STYLE_BOOTSTRAPMIN;?>">
+  <link rel="stylesheet" href="<?=STYLE_FONTAWESOMEMIN;?>">
+  <link rel="stylesheet" href="<?=STYLE_FONTAWESOMEALLMIN;?>">
+  <script src="<?=JS_JQUERY_360;?>"></script>
+  <script src="<?=JS_DEFAULT;?>"></script>
   <script>
       $(document).ready(function () {
           $(document).keydown(function (e) {
@@ -89,10 +83,6 @@ array_multisort($sorted, SORT_ASC, $categories);
               }
           });
       });
-
-      setTimeout(function () {
-          $('#alert').fadeOut('fast');
-      }, <?php echo ALERT_TIMEOUT;?>);
 
       function addCategory(val) {
           document.getElementById('categoryid').value = val;
@@ -162,21 +152,21 @@ array_multisort($sorted, SORT_ASC, $categories);
 
   <div class="popup-headline-container">
     <div class="fp-logo">
-      <img src="./images/logo.png" width="50px" alt="<?php echo PROJECTNAME; ?>" title="<?php echo PROJECTNAME; ?>">
+      <img src="./images/logo.png" width="50px" alt="<?=PROJECTNAME;?>" title="<?=PROJECTNAME;?>">
       <h1 class="popup-headline">Bookmark hinzuf&uuml;gen</h1>
     </div>
 
   </div>
 
   <div class="popup-subheader">
-    <p>Hallo <?php echo $userdata['NAME']; ?>!<br>
+    <p>Hallo <?=$userdata[FIELD_NAME];?>!<br>
       Hier kannst du nun ganz einfach ein neues Bookmark hinzuf&uuml;gen. Nur die Felder ausf&uuml;llen, Kategorie ausw&auml;len, fertig!</p>
   </div>
 
   <div class="popup-form">
 
     <form action="addBookmark.php?done=true" method="post">
-      <input type="hidden" name="userid" id="userid" value="<?php echo $userdata['ID']; ?>">
+      <input type="hidden" name="userid" id="userid" value="<?=$userdata[FIELD_ID];?>">
       <div class="container">
 
         <div class="row">
@@ -185,7 +175,7 @@ array_multisort($sorted, SORT_ASC, $categories);
           </div>
 
           <div class="col right">
-            <input autocomplete="off" type="text" name="name" id="name" value="<?php echo $title; ?>"/>
+            <input autocomplete="off" type="text" name="name" id="name" value="<?=$title;?>"/>
           </div>
         </div>
 
@@ -196,7 +186,7 @@ array_multisort($sorted, SORT_ASC, $categories);
           </div>
 
           <div class="col right">
-            <input autocomplete="off" type="text" name="url" id="url" value="<?php echo $url; ?>"/>
+            <input autocomplete="off" type="text" name="url" id="url" value="<?=$url;?>"/>
           </div>
         </div>
 
@@ -219,8 +209,8 @@ array_multisort($sorted, SORT_ASC, $categories);
             <select id="categoryid" name="categoryid" class="cat-dropdown">
               <?php
               foreach ($categories as $cat) {
-                echo '<option value="' . $cat['ID'] . '">' . $cat['NAME'] . '</option>';
-              }; ?>
+                echo '<option value="' . $cat[FIELD_ID] . '">' . $cat[FIELD_NAME] . '</option>';
+              }?>
             </select>
           </div>
         </div>

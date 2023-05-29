@@ -184,6 +184,7 @@ html body {
     width: 80px;
     height: 100vH;
     float:left;
+    /*background-color: #16374d;*/
     background-color: #16374d;
     color: darkgray;
     position:fixed;
@@ -219,12 +220,15 @@ html body {
 }
 
 .head-left {
+    /* noch nix */
 }
 
 .head-middle {
+    /* noch nix */
 }
 
 .head-right {
+    /* noch nix */
 }
 
 .project-font-style {
@@ -404,7 +408,7 @@ html body {
 
 /* MODAL WINDOW  */
 /* The Modal (background) */
-.modalupload, .modalAddCat {
+.modalupload, .modalbookmaklet, .modalAddCat {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -419,7 +423,7 @@ html body {
 }
 
 /* Modal Content */
-.modalupload-content, .modalAddCat-content {
+.modalupload-content, .modalbookmaklet-content, .modalAddCat-content {
     background-color: #fefefe;
     margin: auto;
     padding: 20px;
@@ -428,7 +432,7 @@ html body {
 }
 
 /* The Close Button */
-.closeUpload, .closeAddCat {
+.closeUpload, .closeBookmarklet, .closeAddCat {
     color: #aaaaaa;
     float: right;
     font-size: 28px;
@@ -437,6 +441,8 @@ html body {
 
 .closeUpload:hover,
 .closeUpload:focus,
+.closeBookmarklet:hover,
+.closeBookmarklet:focus,
 .closeAddCat:hover,
 .closeAddCat:focus {
     color: #000;
@@ -853,6 +859,10 @@ li.no-items {
     border: none;
     background: none;
 }
+
+.deleteSearchBoxIcon:hover {
+    cursor: pointer;
+}
 .search-entry {
     width: 100%;
     border-bottom: 1px solid lightgray;
@@ -860,4 +870,22 @@ li.no-items {
 
 .search-result-box {
     padding: 10px;
+}
+
+.bookmarklet {
+    width:200px;
+}
+
+.bookmarklet-button {
+    border: 1px solid #16374D;
+    padding: 15px;
+    background-color: #16374D;
+    color: white;
+    border-radius: 10px;
+    width: 200px;
+    text-align: center;
+}
+
+.bookmarklet a:hover {
+    text-decoration: none !important;
 }

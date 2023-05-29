@@ -1,13 +1,14 @@
 <?php
 
-require ('validation/ValidationMessage.php');
-require ('validation/ValidationResult.php');
-require ('validation/ValidationType.php');
+require_once('validation/ValidationMessage.php');
+require_once('validation/ValidationResult.php');
+require_once('validation/ValidationType.php');
 
 /*
  * VALIDATE REGISTRATION - Hier werden alle Validierungen durchgefuehrt
  */
-function validateRegistration(string $username, string $email, string $password, string $passwordbest): ValidationResult  {
+function validateRegistration(string $username, string $email, string $password, string $passwordbest): ValidationResult
+{
   $validationResult = checkEmptyFields($username, $email, $password, $passwordbest);
 
   if ($validationResult->getValidationType() === ValidationType::ERROR) {
@@ -44,8 +45,9 @@ function validateRegistration(string $username, string $email, string $password,
  * @param string $passwordbest  Das Passwort bestaetigt
  * @return ValidationResult
  */
-function checkEmptyFields(string $username, string $email, string $password, string $passwordbest): ValidationResult {
-  Logger::trace("checkEmptyFields(): Entry -> USERNAME=" . $username . ' EMAIL=' . $email . ' PASSWORD=' . $password . ' PASSWORDBEST=' . $passwordbest);
+function checkEmptyFields(string $username, string $email, string $password, string $passwordbest): ValidationResult
+{
+  Logger::trace("Entry -> USERNAME=" . $username . ' EMAIL=' . $email . ' PASSWORD=' . $password . ' PASSWORDBEST=' . $passwordbest);
 
   if (empty($username)) {
     return new ValidationResult(ValidationType::ERROR, ValidationMessage::USERNAME_EMPTY);
@@ -63,7 +65,7 @@ function checkEmptyFields(string $username, string $email, string $password, str
     return new ValidationResult(ValidationType::ERROR, ValidationMessage::PASSWORDBEST_EMPTY);
   }
 
-  Logger::trace("checkEmptyFields(): Validierung erfolgreich");
+  Logger::trace("Validierung erfolgreich");
   return new ValidationResult(ValidationType::SUCCESS, ValidationMessage::EMPTY);
 }
 
@@ -73,8 +75,9 @@ function checkEmptyFields(string $username, string $email, string $password, str
  * @param string $username Der zu pruefende Username
  * @return ValidationResult ValidationType::SUCCESS=okay, ValidationType::ERROR=nokay
  */
-function validateUsername(string $username): ValidationResult {
-  Logger::trace("validateUsername(): Entry -> USERNAME=" . $username);
+function validateUsername(string $username): ValidationResult
+{
+  Logger::trace("Entry -> USERNAME=" . $username);
 
   if (containsForbiddenChars($username)) {
     return new ValidationResult(ValidationType::ERROR, ValidationMessage::USERNAMECONTAINSFORBIDDENCHARS);
@@ -88,7 +91,7 @@ function validateUsername(string $username): ValidationResult {
     return new ValidationResult(ValidationType::ERROR, ValidationMessage::USERNAMEALREADYEXISTS);
   }
 
-  Logger::trace("validateUsername(): Validierung erfolgreich");
+  Logger::trace("Validierung erfolgreich");
   return new ValidationResult(ValidationType::SUCCESS, ValidationMessage::EMPTY);
 }
 
@@ -99,8 +102,9 @@ function validateUsername(string $username): ValidationResult {
  * @param string $email Die zu pruefende Email
  * @return ValidationResult ValidationResult::SUCCESS=okay, ValidationResult::ERROR=nokay
  */
-function validateEmail(string $email): ValidationResult {
-  Logger::trace("validateEmail(): Entry -> EMAIL=" . $email);
+function validateEmail(string $email): ValidationResult
+{
+  Logger::trace("Entry -> EMAIL=" . $email);
 
   if (!str_contains($email, "@")) {
     return new ValidationResult(ValidationType::ERROR, ValidationMessage::EMAILNOTOKAY);
@@ -114,7 +118,7 @@ function validateEmail(string $email): ValidationResult {
     return new ValidationResult(ValidationType::ERROR, ValidationMessage::EMAILALREADYEXISTS);
   }
 
-  Logger::trace("validateEmail(): Validierung erfolgreich");
+  Logger::trace("Validierung erfolgreich");
   return new ValidationResult(ValidationType::SUCCESS, ValidationMessage::EMPTY);
 }
 
@@ -125,8 +129,9 @@ function validateEmail(string $email): ValidationResult {
  * @param string $passwordbest Das zu pruefende Passwort aus Passwort bestaetigen
  * @return ValidationResult ValidationResult::SUCCESS=okay, ValidationResult::ERROR=nokay
  */
-function validatePassword(string $password, string $passwordbest): ValidationResult {
-  Logger::trace("validatePassword(): Entry -> PASSWORD=" . $password . ' PASSWORDBEST=' . $passwordbest);
+function validatePassword(string $password, string $passwordbest): ValidationResult
+{
+  Logger::trace("Entry -> PASSWORD=" . $password . ' PASSWORDBEST=' . $passwordbest);
 
   if (strlen($password) < PASSWORD_MIN_CHARS) {
     return new ValidationResult(ValidationType::ERROR, ValidationMessage::PASSWORDTOOSHORT);
@@ -140,7 +145,7 @@ function validatePassword(string $password, string $passwordbest): ValidationRes
     return new ValidationResult(ValidationType::ERROR, ValidationMessage::PASSWORDWITHEMPTYCHARS);
   }
 
-  Logger::trace("validatePassword(): Validierung erfolgreich");
+  Logger::trace("Validierung erfolgreich");
   return new ValidationResult(ValidationType::SUCCESS, ValidationMessage::EMPTY);
 }
 
@@ -151,8 +156,9 @@ function validatePassword(string $password, string $passwordbest): ValidationRes
  * @param string $username Der zu pruefende Username
  * @return bool true=Username existiert, false=Username nicht gefunden
  */
-function existsUsername(string $username): bool {
-  Logger::trace('existsUsername(): Enter -> USERNAME=' . $username);
+function existsUsername(string $username): bool
+{
+  Logger::trace('Enter -> USERNAME=' . $username);
 
   $lowerUsername = strtolower($username);
 
@@ -161,19 +167,19 @@ function existsUsername(string $username): bool {
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_USERNAME, $lowerUsername);
 
-  Logger::trace('existsUsername(): Folgender SQL wird ausgefuehrt: ' . $sql);
+  Logger::sql($sql);
 
   $stmt -> execute();
   $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
   if (!empty($res)) {
-    Logger::trace('existsUsername(): Exit -> true');
+    Logger::trace('Exit -> true');
     return true;
   }
 
   $db = null;
 
-  Logger::trace('existsUsername(): Exit -> false');
+  Logger::trace('Exit -> false');
   return false;
 }
 
@@ -184,8 +190,9 @@ function existsUsername(string $username): bool {
  * @param string $email Die zu pruefende Email
  * @return bool true=Email existiert, false=Email nicht gefunden
  */
-function existsEmail(string $email): bool {
-  Logger::trace('existsEmail(): Enter -> EMAIL=' . $email);
+function existsEmail(string $email): bool
+{
+  Logger::trace('Enter -> EMAIL=' . $email);
 
   $lowerEmail = strtolower($email);
 
@@ -194,19 +201,19 @@ function existsEmail(string $email): bool {
   $stmt = $db -> prepare($sql);
   $stmt -> bindParam(PARAM_EMAIL, $lowerEmail);
 
-  Logger::trace('existsEmail(): Folgender SQL wird ausgefuehrt: ' . $sql);
+  Logger::trace('Folgender SQL wird ausgefuehrt: ' . $sql);
 
   $stmt -> execute();
   $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
 
   if (!empty($res)) {
-    Logger::trace('existsEmail(): Exit -> true');
+    Logger::trace('Exit -> true');
     return true;
   }
 
   $db = null;
 
-  Logger::trace('existsEmail(): Exit -> false');
+  Logger::trace('Exit -> false');
   return false;
 }
 

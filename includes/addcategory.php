@@ -6,11 +6,11 @@
     <p><b>Neue Kategorie hinzufügen</b></p>
     <div class="container">
 
-    <form action="<?php echo DASHBOARD;?>" method="POST">
+    <form action="<?=DASHBOARD;?>" method="POST">
       <div class="form-group">
-        <label for="category" class="col-sm-2 col-form-label" style="min-width: 800px;">Kategoriename: <small>(max. 20 Zeichen, keine Sonderzeichen)</small></label>
+        <label for="category" class="col-sm-2 col-form-label" style="min-width: 800px;">Kategoriename: <small>(max. <?=CAT_MAX_CHARS;?> Zeichen, keine Sonderzeichen)</small></label>
         <div class="col-sm-10">
-          <input type="text" style="width:600px;" class="form-control" id="category" name="category" maxlength="20" placeholder="" value="">
+          <input type="text" style="width:600px;" class="form-control" id="category" name="category" maxlength="<?=CAT_MAX_CHARS;?>" placeholder="" value="">
         </div>
       </div>
 
@@ -19,21 +19,21 @@
         <div class="col-sm-10">
           <select id="parentcategoryid" style="width:600px;" name="parentcategoryid" class="cat-dropdown">
             <?php
-            $categories = getCategorieListByUserId($userdata['ID'], true);
-            $categories[] = ['ID' => '0', 'NAME' => 'Keine', 'USERID' => $userdata['ID'], 'COLOR' => '#ff5733'];
+            $categories = getCategorieListByUserId($userdata[FIELD_ID], true);
+            $categories[] = ['ID' => '0', 'NAME' => 'Keine', 'USERID' => $userdata[FIELD_ID], 'COLOR' => '#ff5733'];
 
             foreach ($categories as $cat) {
-              if (isSubSubCategory($cat['ID'], $userdata['ID'])) {
-                Logger::trace("Kategorie '" . $cat['NAME'] . "' ist SubSubCategory und wird uebersprungen...");
+              if (isSubSubCategory($cat[FIELD_ID], $userdata[FIELD_ID])) {
+                Logger::trace("Kategorie '" . $cat[FIELD_NAME] . "' ist SubSubCategory und wird uebersprungen...");
                 continue;
               }
 
-              if ($cat['ID'] == '0') {
-                echo '<option value="' . $cat['ID'] . '" selected="true">' . $cat['NAME'] . '</option>';
+              if ($cat[FIELD_ID] == '0') {
+                echo '<option value="' . $cat[FIELD_ID] . '" selected="true">' . $cat[FIELD_NAME] . '</option>';
               } else {
-                echo '<option value="' . $cat['ID'] . '">' . $cat['NAME'] . '</option>';
+                echo '<option value="' . $cat[FIELD_ID] . '">' . $cat[FIELD_NAME] . '</option>';
               }
-            } ?>
+            }?>
           </select>
         </div>
       </div>
@@ -65,19 +65,25 @@
     const spanCat = document.getElementsByClassName("closeAddCat")[0];
 
     // When the user clicks the button, open the modal
-    btnAddCat.onclick = function() {
-        modalAddCat.style.display = "block";
+    if (btnAddCat && modalAddCat) {
+        btnAddCat.onclick = function () {
+            modalAddCat.style.display = "block";
+        }
     }
 
     // When the user clicks on <span> (x), close the modal
-    spanCat.onclick = function() {
-        modalAddCat.style.display = "none";
+    if (spanCat && modalAddCat) {
+        spanCat.onclick = function () {
+            modalAddCat.style.display = "none";
+        }
     }
 
     // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modalAddCat) {
-            modalAddCat.style.display = "none";
+    if (modalAddCat) {
+        window.onclick = function (event) {
+            if (event.target === modalAddCat) {
+                modalAddCat.style.display = "none";
+            }
         }
     }
 </script>
