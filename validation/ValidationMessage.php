@@ -4,7 +4,8 @@
  * Klasse fuer die unterschiedlichen Nachrichten
  * Eigentlich ein ENUM aber in PHP wohl besser das so zu machen ;-)
  */
-abstract class ValidationMessage {
+abstract class ValidationMessage
+{
 
   const EMPTY                              = "";
   const VALIDIERUNG_ERFOLGREICH            = 'Die Vaidierung war erfolgreich';

@@ -1,5 +1,5 @@
 <?php
-$userid = $_SESSION['userdata']['ID'];
+$userid = $_SESSION[SESSION_USERDATA][FIELD_ID];
 
 if (isset($userid)) {
 
@@ -11,8 +11,7 @@ if (isset($userid)) {
   $showDatenschutzLink = $footerParameter[SHOW_DATENSCHUTZ_LINK];
   $showImpressumLink = $footerParameter[SHOW_IMPRESSUM_LINK];
 
-  Logger::trace("Footer-Data: SHOWFOOTER=" . $showFooter);
-  Logger::trace("Footer-Data: SHOWDONOLINK=". $showDonoLink . ' SHOWABOUTLINK=' . $showAboutLink . ' SHOWDATENSCHUTZLINK=' . $showDatenschutzLink . ' SHOWIMPRESSUMLINK=' . $showImpressumLink);
+  Logger::trace("Footer-Data: " . json_encode($footerParameter));
 
   if ($showFooter && ($showDonoLink || $showAboutLink || $showDatenschutzLink || $showImpressumLink)) {
     echo '<div class="footer-section">';
@@ -20,7 +19,8 @@ if (isset($userid)) {
     if ($showDonoLink) {
       echo '  <div class="float-left">';
       echo '    <div class="donation-text-box">';
-      echo '      <span class="donoation-text-box-text">It\'s hard to fight evil but the little things, like a cup of coffee, really helps. Right? -> <a class="donation-text-link" href="' . DONATELINK . '" target="_blank">' . DONATETEXT . '</a></span>';
+      echo '      <span class="donoation-text-box-text">It\'s hard to fight evil but the little things, like a cup of coffee, really helps. Right? ->
+                    <a class="donation-text-link" href="' . DONATELINK . '" target="_blank">' . DONATETEXT . '</a></span>';
       echo '    </div>';
       echo '  </div>';
     }

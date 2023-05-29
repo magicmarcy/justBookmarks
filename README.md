@@ -23,13 +23,12 @@ justBookmarks bietet genau das, was in diesem Zusammenhang fehlt: Eine einfache 
 * FairUse-Konzept
 * Kostenlos nutzen unter [https://bookmarks.magicmarcy.de](https://bookmarks.magicmarcy.de/) <sup style="color:red">NEU</sup>
 * URL jetzt auch SSL verschlüsselt <sup style="color:red">NEU</sup> 
-* oder Quellcode downloaden, SQLite Dantenbank erstellen und selber hosten (Anleitung folgt, funktioniert noch nicht innovativ)
+* oder Quellcode downloaden, SQLite Datenbank erstellen und selber hosten (__funktioniert noch nicht!__)
 
 ## Know Issues
 * [GitHub Issues](https://github.com/magicmarcy/justBookmarks/issues)
 
-Falls dir noch weitere Fehler auffallen, kannst du hier einfach ein neues Ticket anlegen
-
+Falls dir noch weitere Fehler auffallen, kannst du hier einfach ein neues Ticket anlegen  
 ## Features in Planung:
 * Import eines Bookmarks-Exports (html) der verschiedenen Browser
 * Customisations pro User

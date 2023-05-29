@@ -6,25 +6,24 @@ include('static/Konst.php');
 $checkPassword = null;
 
 $userDataFromCookie = checkCookie();
-$userDataOkay = isset($userDataFromCookie['NAME']) && isset($userDataFromCookie['PASS']);
+$userDataOkay = isset($userDataFromCookie[FIELD_NAME]) && isset($userDataFromCookie[FIELD_PASS]);
 
-if (isset($_POST["submit"]) || $userDataOkay) {
-  Logger::trace('index(): POST submit ready ...');
-
-  $username = $_POST["username"];
-  $password = hash('sha1', $_POST["password"]);
+if (isset($_POST[POST_SUBMIT]) || $userDataOkay) {
+  Logger::trace('POST submit ready ...');
 
   if ($userDataOkay) {
-    $username = $userDataFromCookie['NAME'];
-    $password = $userDataFromCookie['PASS'];
+    $username = $userDataFromCookie[FIELD_NAME];
+    $password = $userDataFromCookie[FIELD_PASS];
+  } else {
+    $username = $_POST[POST_USERNAME];
+    $password = hash('sha1', $_POST[POST_PASSWORD]);
   }
 
-  Logger::trace('index(): Username: ' . $username . ' | Password: ' . $password);
+  Logger::trace('Username: ' . $username . ' | Password: ' . $password);
 
   $checkPassword = checkLogin($username, $password);
 
   if ($checkPassword == OKAY) {
-
     processingToken();
 
     updateLastLoginWithUsernameAndPass($username, $password);
@@ -35,7 +34,7 @@ if (isset($_POST["submit"]) || $userDataOkay) {
       session_start();
     }
 
-    $_SESSION['login'] = OKAY;
+    $_SESSION[SESSION_LOGIN] = OKAY;
 
     $checkAddBookmarkCookie = checkAddCookie();
 
@@ -45,7 +44,7 @@ if (isset($_POST["submit"]) || $userDataOkay) {
       header("Location: main.php");
     }
   } else {
-    Logger::trace("index(): +++++ Fehlgeschlagener Loginversuch! +++++");
+    Logger::trace("+++++ Fehlgeschlagener Loginversuch! +++++");
   }
 }
 ?>
@@ -54,57 +53,62 @@ if (isset($_POST["submit"]) || $userDataOkay) {
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <title><?php echo PROJECTSHORTDESC; ?></title>
-  <meta name="description" content="<?php echo PROJECTSHORTDESC; ?>">
+  <title><?=PROJECTSHORTDESC;?></title>
+  <meta name="description" content="<?=PROJECTSHORTDESC;?>">
   <link rel="icon" href="images/logo.png" type="image/png">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="externals/bootstrap/5.2.3/css/bootstrap.min.css">
-  <link rel="stylesheet" href="externals/fontawesome/6.2.1/fontawesome.min.css">
-  <link rel="stylesheet" href="externals/fontawesome/6.2.1/all.min.css">
-  <script src="externals/jquery/3.6.3/jquery-3.6.3.min.js"></script>
+  <link rel="stylesheet" href="<?=STYLE_DEFAULT_CSS;?>">
+  <link rel="stylesheet" href="<?=STYLE_BOOTSTRAPMIN_INDEX;?>">
+  <link rel="stylesheet" href="<?=STYLE_FONTAWESOMEMIN_INDEX;?>">
+  <link rel="stylesheet" href="<?=STYLE_FONTAWESOMEALLMIN_INDEX;?>">
+  <script src="<?=JS_JQUERY;?>"></script>
   <script>
-    setTimeout(function() {
-        $('#alert').fadeOut('fast');
-    }, <?php echo ALERT_TIMEOUT;?>);
+      setTimeout(function() {
+          let alert = document.getElementById('alert');
+          if (alert) {
+              alert.fadeOut('fast');
+          }
+      }, <?=ALERT_TIMEOUT;?>);
   </script>
 </head>
 <body>
 
 <div class="container-fluid ps-md-0">
   <div class="row g-0">
-    <?php include ('includes/frontpage-left.php');?>
+    <?php include_once('includes/frontpage-left.php');?>
     <div class="col-md-8 col-lg-6">
       <div class="login d-flex align-items-center py-5">
         <div class="container">
           <div class="row">
             <div class="col-md-9 col-lg-8 mx-auto">
-              <h3 class="login-heading project-font-style mb-4">Login</h3>
+              <h3 class="login-heading project-font-style mb-4"><?=LOGIN;?></h3>
 
-              <form action="<?php echo FORM_ACTION; ?>" method="post">
+              <form action="<?=FORM_ACTION;?>" method="post">
                 <div class="form-floating mb-3">
                   <input type="text" name="username" class="form-control" id="floatingInput" placeholder="Username">
-                  <label for="floatingInput">Username</label>
+                  <label for="floatingInput"><?=USERNAME;?></label>
                 </div>
                 <div class="form-floating mb-3">
                   <input type="password" class="form-control" id="floatingPassword" name="password"
                          placeholder="Password">
-                  <label for="floatingPassword">Password</label>
+                  <label for="floatingPassword"><?=PASSWORD;?></label>
                 </div>
                 <div class="d-grid">
                   <button class="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" name="submit"
-                          type="submit">Einloggen
+                          type="submit"><?=REG_EINLOGGEN;?>
                   </button>
                 </div>
                 <?php if ("1" == getParameter(REGISTRATION_ALLOWED, 0)) {
-                  Logger::trace("index(): Registrtierung offen, zeige Link an");
-                  echo '<div class="register-link"><a href="register.php">Registrieren</a></div>';
+                  Logger::trace("Registrtierung offen, zeige Link an");
+                  echo '<div class="register-link"><a href="register.php">' . REGISTRIEREN . '</a></div>';
                 }
                 ?>
               </form>
 
               <?php
               if ($checkPassword == NOKAY) {
-                echo '<div id="alert" class="alert alert-danger alert-dismissible fade show" style="position:fixed; top: 0;right:0;width:100vW;text-align:center;" role="alert">Login falsch!</div>';
+                echo '<div id="alert" class="alert alert-danger alert-dismissible fade show"
+                           style="position:fixed; top: 0;right:0;width:100vW;text-align:center;"
+                           role="alert">' . LOGIN_FALSCH . '</div>';
               }?>
 
             </div>

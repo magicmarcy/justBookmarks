@@ -1,24 +1,26 @@
 <?php
-include('functions.php');
-include('static/Konst.php');
-require('Logger.php');
+include_once('functions.php');
+include_once('static/Konst.php');
+require_once('Logger.php');
 
 session_start();
 
-if ($_SESSION['login'] != OKAY) {
-  Logger::trace('main(): Login falsch! Weiterleitung zu Header-Location->' . PROJECT_STARTPAGE);
+if ($_SESSION[SESSION_LOGIN] != OKAY) {
+  Logger::trace('Login falsch! Weiterleitung zu Header-Location-> ' . PROJECT_STARTPAGE);
   header("Location: " . PROJECT_STARTPAGE);
 }
 
 deleteAddCookie();
 
-$userdata = $_SESSION['userdata'];
+$userdata = $_SESSION[SESSION_USERDATA];
 
-Logger::trace("init(): Login: ID=". $userdata['ID'] . " NANE=". $userdata['NAME'] . " EMAIL=" . $userdata['EMAIL'] . " PASS=" . $userdata['PASS'] . " VERIFIED=" . $userdata['VERIFIED'] . " CREATED=" . $userdata['CREATED'] . " LASTLOGIN=" . $userdata['LASTLOGIN']);
+Logger::trace(<<<EOD
+Login: ID=${userdata[FIELD_ID]} NAME=${userdata[FIELD_NAME]} EMAIL=${userdata[FIELD_EMAIL]} PASS=${userdata[FIELD_PASS]} VERIFIED=${userdata[FIELD_VERIFIED]} CREATED=${userdata[FIELD_CREATED]} LASTLOGIN=${userdata[FIELD_LASTLOGIN]}
+EOD);
 
-if (isset($_POST["submit"])) {
-  $categoryid = $_POST["categoryid"];
-  Logger::trace("main(): POST->categoryid: " . $categoryid);
+if (isset($_POST[POST_SUBMIT])) {
+  $categoryid = $_POST[POST_CATEGORYID];
+  Logger::trace("POST->categoryid: " . $categoryid);
 }
 ?>
 
@@ -27,15 +29,15 @@ if (isset($_POST["submit"])) {
 <html lang="de">
 <head>
   <meta charset="utf-8">
-  <title><?php echo PROJECTSHORTDESC; ?></title>
-  <meta name="description" content="<?php echo PROJECTSHORTDESC; ?>">
+  <title><?=PROJECTSHORTDESC;?></title>
+  <meta name="description" content="<?=PROJECTSHORTDESC;?>">
   <link rel="icon" href="images/logo.png" type="image/png">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="externals/fontawesome/6.0.0/fontawesome.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <script src="externals/jquery/3.6.3/jquery-3.6.3.min.js"></script>
-  <script src="externals/default.js"></script>
+  <link rel="stylesheet" href="<?=STYLE_DEFAULT_CSS;?>">
+  <link rel="stylesheet" href="<?=STYLE_BOOTSTRAPMIN;?>">
+  <link rel="stylesheet" href="<?=STYLE_FONTAWESOMEMIN;?>">
+  <link rel="stylesheet" href="<?=STYLE_FONTAWESOMEALLMIN;?>">
+  <script src="<?=JS_JQUERY;?>"></script>
+  <script src="<?=JS_DEFAULT;?>"></script>
   <script>
       // Beim Laden der Seite
       window.addEventListener("DOMContentLoaded", function() {
@@ -52,202 +54,117 @@ if (isset($_POST["submit"])) {
           }
       });
 
-      $(document).ready(function(){
-          $('#search').keyup(function() {
-              const query = $(this).val();
-              $.ajax({
-                  url: 'search.php',
-                  method: 'POST',
-                  data: { query: query },
-                  success: function(response) {
-                      $('#search-results').html(response);
-                  }
-              });
-          });
-
-          // Default set the focus into the searchfield
-          document.getElementById('search').focus();
-      });
-
-      document.onkeyup = function(e) {
-          if (e.altKey && e.which === 87) {
-              document.getElementById('search').focus();
-          }
-
-          if (e.which === 27) {
-              deleteSearchData();
-          }
-      };
-
-      function onkeypressed(evt, input) {
-          const code = evt.charCode || evt.keyCode;
-          if (code === 27) {
-              input.value = '';
-          }
-      }
-
-      function focusFirstEntry(evt) {
-          const code = evt.charCode || evt.keyCode;
-
-          if (code === 40) {
-              evt.preventDefault();
-
-              document.getElementById('search-results').getElementsByTagName('a')[0].focus();
-          }
-      }
-
-      function fucusNextEntry(evt, input) {
-          const code = evt.charCode || evt.keyCode;
-
-          // Pfeil nach oben
-          const isUp = code === 38;
-
-          // Pfeil nach unten
-          const isDown = code === 40;
-
-          if (isUp || isDown) {
-              evt.preventDefault();
-
-              const list = document.getElementById('search-results').getElementsByTagName('a');
-
-              let indexOfActiveElement = -1;
-
-              for (let i = 0; i < list.length; i++) {
-                  if (list[i] === document.activeElement) {
-                      indexOfActiveElement = i;
-                  }
-              }
-
-              if (isUp && indexOfActiveElement !== -1) {
-                  if (indexOfActiveElement - 1 >= 0) {
-                      indexOfActiveElement -= 1;
-                  } else {
-                      indexOfActiveElement = list.length - 1;
-                  }
-              } else if (isDown && indexOfActiveElement !== -1 && indexOfActiveElement + 1 < list.length) {
-                  indexOfActiveElement += 1;
-              } else {
-                  indexOfActiveElement = 0;
-              }
-
-              list[indexOfActiveElement].focus();
-          }
-
-          closeAndDeleteSearchData(evt);
-      }
-
-      function closeAndDeleteSearchData(evt) {
-          const code = evt.charCode || evt.keyCode;
-
-          if (code === 27) {
-              deleteSearchData();
-              document.getElementById('search').focus();
-          }
-      }
-
       setTimeout(function() {
-          $('#alert').fadeOut('fast');
-      }, <?php echo ALERT_TIMEOUT;?>);
+          let alert = document.getElementById('alert');
+          if (alert) {
+              alert.fadeOut('fast');
+          }
+      }, <?=ALERT_TIMEOUT;?>);
   </script>
 </head>
 <body>
 <div id="overlay" onclick="hideOverlay();"></div>
 
 <?php
-if (isset($_POST['name']) && isset($_POST['url']) && isset($_POST['tags']) && isset($_POST['catid'])&& isset($_POST['userid'])) {
+if (isset($_POST[POST_NAME]) && isset($_POST[POST_URL]) && isset($_POST[POST_TAGS]) && isset($_POST[POST_CATID])&& isset($_POST[POST_USERID])) {
 
-  Logger::trace("main(): Bookmark hinzufuegen geklickt");
-  Logger::trace("main(): NAME=" . $_POST['name'] . ' URL=' . $_POST['url'] . ' TAGS=' . $_POST['tags'] . ' CATID=' . $_POST['catid'] . ' USERID=' . $_POST['userid']);
+  Logger::trace("Bookmark hinzufuegen geklickt");
+  Logger::trace('NAME=' . $_POST[POST_NAME] . ' URL=' . $_POST[POST_URL] . ' TAGS=' . $_POST[POST_TAGS] . ' CATID=' . $_POST[POST_CATID] . ' USERID=' . $_POST[POST_USERID]);
 
-  $newBookmarkName = $_POST['name'];
-  $newBookmarkUrl = $_POST['url'];
-  $newBookmarkTags = $_POST['tags'];
-  $newBookmarkCatId = $_POST['catid'];
-  $newBookmarkUserId = $_POST['userid'];
+  $newBookmarkName = $_POST[POST_NAME];
+  $newBookmarkUrl = $_POST[POST_URL];
+  $newBookmarkTags = $_POST[POST_TAGS];
+  $newBookmarkCatId = $_POST[POST_CATID];
+  $newBookmarkUserId = $_POST[POST_USERID];
 
   $addResult = addNewBookmark($newBookmarkName, $newBookmarkUrl, $newBookmarkTags, $newBookmarkCatId, $newBookmarkUserId);
 
   if ($addResult) {
-    echo '<div id="alert" class="alert alert-info" role="alert">Bookmark hinzugefügt!</div>';
+    showInfo(ADD_BOOKMARK_SUCCESS);
   }
 }
 
-if (isset($_POST['delete_bookmark_bookmarkid']) && isset($_POST['delete_bookmark_catid']) && isset($_POST['delete_bookmark_userid'])) {
-  $delete_bookmark_bookmarkid = $_POST['delete_bookmark_bookmarkid'];
-  $delete_bookmark_catid = $_POST['delete_bookmark_catid'];
-  $delete_bookmark_userid = $_POST['delete_bookmark_userid'];
+if (isset($_POST[POST_DELETE_BOOKMARK_BOOKMARK_ID]) && isset($_POST[POST_DELETE_BOOKMARK_CAT_ID]) && isset($_POST[POST_DELETE_BOOKMARK_USER_ID])) {
+  $delete_bookmark_bookmarkid = $_POST[POST_DELETE_BOOKMARK_BOOKMARK_ID];
+  $delete_bookmark_catid = $_POST[POST_DELETE_BOOKMARK_CAT_ID];
+  $delete_bookmark_userid = $_POST[POST_DELETE_BOOKMARK_USER_ID];
 
   Logger::trace("main(): Bookmark loeschen geklickt");
-  Logger::trace("main(): BOOKMARKID=" . $_POST['delete_bookmark_bookmarkid'] . ' CATID=' . $_POST['delete_bookmark_catid'] . ' USERID=' . $_POST['delete_bookmark_userid']);
+  Logger::trace("main(): BOOKMARKID=" . $_POST[POST_DELETE_BOOKMARK_BOOKMARK_ID] . ' CATID=' . $_POST[POST_DELETE_BOOKMARK_CAT_ID] . ' USERID=' . $_POST[POST_DELETE_BOOKMARK_USER_ID]);
 
   if (deleteBookmark($delete_bookmark_bookmarkid, $delete_bookmark_userid, $delete_bookmark_catid)) {
-    echo '<div id="alert" class="alert alert-info" role="alert">Bookmark gelöscht</div>';
+    showInfo(DELETE_BOOKMARK_SUCCESS);
   } else {
-    echo '<div id="alert" class="alert alert-danger" role="alert">Es ist ein Fehler beim Löschen des Bookmarks aufgetreten!</div>';
+    showError(DELETE_BOOKMARK_ERROR);
   }
 }
 
-if (isset($_GET['category']) && isset($_GET['color'])) {
-  $categoryname = $_GET['category'];
-  $parentcategoryid = $_GET['parentcategoryid'];
-  $color = $_GET['color'];
+if (isset($_GET[GET_CATEGORY]) && isset($_GET[GET_COLOR])) {
+  $categoryname = $_GET[GET_CATEGORY];
+  $parentcategoryid = $_GET[GET_PARENT_CATEGORY_ID];
+  $color = $_GET[GET_COLOR];
 
-  Logger::trace("main(): Kategorie hinzufügen geklickt. CATEGORY=" . $categoryname . ' COLOR=' . $color . ' PARENTID=' . $parentcategoryid);
+  Logger::trace("Kategorie hinzufügen geklickt. CATEGORY=" . $categoryname . ' COLOR=' . $color . ' PARENTID=' . $parentcategoryid);
 
-  if (validateCategory($categoryname, $userdata['ID']) && validateColor($color)) {
-    if (addNewCategory($categoryname, $color, $userdata['ID'], $parentcategoryid)) {
-      echo '<div id="alert" class="alert alert-info" role="alert">Kategorie hinzugefügt!</div>';
+  if (validateCategory($categoryname, $userdata[FIELD_ID]) && validateColor($color)) {
+    if (addNewCategory($categoryname, $color, $userdata[FIELD_ID], $parentcategoryid)) {
+      showInfo(ADD_CATEGORY_SUCCESS);
     } else {
-      echo '<div id="alert" class="alert alert-danger" role="alert">Es ist ein Fehler beim Anlegen der Kategorie aufgetreten!</div>';
+      showError(ADD_CATEGORY_ERROR);
     }
   }
 }
 
-if (isset($_POST['delete-category-catid']) && isset($_POST['delete-category-userid'])) {
-  $catid = $_POST['delete-category-catid'];
-  $userid = $_POST['delete-category-userid'];
+if (isset($_POST[POST_DELETE_CAT_CAT_ID]) && isset($_POST[POST_DELETE_CAT_USER_ID])) {
+  $catid = $_POST[POST_DELETE_CAT_CAT_ID];
+  $userid = $_POST[POST_DELETE_CAT_USER_ID];
 
   if ($catid == "0") {
-    echo '<div id="alert" class="alert alert-danger" role="alert">Die Default-Kategorie kann nicht gelöscht werden!</div>';
+    showError(DELETE_DEFAULT_ERROR);
     return;
   }
 
-  Logger::trace("main(): Kategorie loeschen geklickt. CATEGORYID=" . $catid . ' USERID=' . $userid);
+  Logger::trace("Kategorie loeschen geklickt. CATEGORYID=" . $catid . ' USERID=' . $userid);
 
   if (deleteCategory($userid, $catid)) {
-    echo '<div id="alert" class="alert alert-info" role="alert">Kategorie gelöscht, Bookmarks verschoben!</div>';
+    showInfo(DELETE_CATEGORY_SUCCEDD);
   } else {
-    echo '<div id="alert" class="alert alert-danger" role="alert">Es ist ein Fehler beim Löschen der Kategorie aufgetreten!</div>';
+    showError(DELETE_CATEGORY_ERROR);
   }
 }
 
-$basetarget = getParameter(BASETARGET, $userdata['ID']);
+$basetarget = getParameter(BASETARGET, $userdata[FIELD_ID]);
 ?>
 
 <div class="column-left">
   <div class="column-header-left">
     <div class="logo-image">
-      <a href="main.php"><img src="images/logo.png" alt="<?php echo PROJECTNAME; ?>" title="<?php echo PROJECTNAME; ?>" width="40"></a>
+      <a href="<?=DASHBOARD;?>"><img src="images/logo.png" alt="<?=PROJECTNAME;?>" title="<?=PROJECTNAME;?>" width="40"></a>
     </div>
   </div>
   <div class="demo-content icons">
     <ul>
-      <li><a href="<?php echo DASHBOARD;?>" title="Bookmarks nach Liste"><i class="fa-solid fa-list"></i></a></li>
+      <li><a href="<?=DASHBOARD;?>" title="Bookmarks nach Liste"><i class="fa-solid fa-list"></i></a></li>
 
-      <?php if (getParameterBoolean(SHOW_TAG_TAB, $userdata['ID'])) {
+      <?php if (getParameterBoolean(SHOW_TAG_TAB, $userdata[FIELD_ID])) {
         echo '<li><a href="" title="Bookmarks nach Tags"><i class="fa-solid fa-hashtag"></i></a></li>';
       }?>
 
-      <?php if (getParameterBoolean(SHOW_PROFILE_TAB, $userdata['ID'])) {
+      <?php if (getParameterBoolean(SHOW_PROFILE_TAB, $userdata[FIELD_ID])) {
         echo '<li><a href="" title="Profil-Informationen"><i class="fa-solid fa-user"></i></a></li>';
       }?>
 
-      <?php if (getParameterBoolean(SHOW_SETTINGS_TAB, $userdata['ID'])) {
+      <?php if (getParameterBoolean(SHOW_SETTINGS_TAB, $userdata[FIELD_ID])) {
         echo '<li><a href="" title="Einstellungen"><i class="fa-solid fa-gears"></i></a></li>';
       }?>
 
-      <?php if (getParameterBoolean(SHOW_UPLOAD_TAB, $userdata['ID'])) {
+      <?php if (getParameterBoolean(SHOW_UPLOAD_TAB, $userdata[FIELD_ID])) {
         echo '<li><button id="uploadBtn" class="fa-button" title="File-Upload Bookmark-Browser-Export"><i class="fa-solid fa-file-arrow-up"></i></button></li>';
+      }?>
+
+      <?php if (getParameterBoolean(SHOW_BOOKMARKLET_TAB, $userdata[FIELD_ID])) {
+        echo '<li><button onclick="showBookmarkletModal()" id="bookmarkletBtn" class="fa-button" title="NEU: justBookmarks Bookmarklet">
+              <i class="fa-solid fa-book-medical"></i></button></li>';
       }?>
 
       <li><a href="logout.php" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></a></li>
@@ -259,8 +176,8 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
 
 <div class="column-middle">
   <div class="column-header-middle">
-    <div class="project-name"><?php echo PROJECTNAME; ?></div>
-    <div class="project-version"><a href="<?php echo GITHUB_RELEASEINFO;?>" target="_blank" title="Releaseinfo @github"><?php echo PROJECTVERSION; ?></a></div>
+    <div class="project-name"><?=PROJECTNAME;?></div>
+    <div class="project-version"><a href="<?=GITHUB_RELEASEINFO;?>" target="_blank" title="Releaseinfo @github"><?=PROJECTVERSION;?></a></div>
   </div>
   <div id="content-left" class="demo-content">
     <div class="category-headline">KATEGORIEN <button id="addCatBtn" class="fa-upl-button" title="Kategorie hinzufügen"><i class="fa-solid fa-circle-plus"></i></button></div>
@@ -268,41 +185,41 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
       <li>
         <div class="category-entry">
           <div class="category-bullet" style="background-color: red;"></div>
-          <div class="category-name"><a href="main.php" onclick="saveScroll();">Default</a></div>
-          <div class="category-number"><?php echo getNumberOfBookmarksById(0, $userdata['ID']);?></div>
+          <div class="category-name"><a href="<?=DASHBOARD;?>" onclick="saveScroll();"><?=DEFAULT_CAT_NAME;?></a></div>
+          <div class="category-number"><?=getNumberOfBookmarksById(0, $userdata[FIELD_ID]);?></div>
         </div>
       </li>
 
       <?php
-      $categories = getCategorieListByUserId($userdata['ID'], true);
+      $categories = getCategorieListByUserId($userdata[FIELD_ID], true);
 
       foreach ($categories as $row) {
-        if ($row['PARENT'] == '0') {
+        if ($row[FIELD_PARENT] == '0') {
           echo '<li>';
           echo '  <div class="category-entry">';
-          echo '    <div class="category-bullet" style="background-color: ' . $row['COLOR'] . ';"></div>';
-          echo '    <div class="category-name cat-short one"><a href="main.php?cat=' . $row['ID'] . '" onclick="saveScroll();">' . $row['NAME'] . '</a></div>';
-          echo '    <div class="category-number">' . getNumberOfBookmarksById($row['ID'], $userdata['ID']) . '</div>';
+          echo '    <div class="category-bullet" style="background-color: ' . $row[FIELD_COLOR] . ';"></div>';
+          echo '    <div class="category-name cat-short one"><a href="' . DASHBOARD. CAT_URL_PREFIX . $row[FIELD_ID] . '" onclick="saveScroll();">' . $row[FIELD_NAME] . '</a></div>';
+          echo '    <div class="category-number">' . getNumberOfBookmarksById($row[FIELD_ID], $userdata[FIELD_ID]) . '</div>';
           echo '  </div>';
           echo '</li>';
 
-          $subcategories = getSubCategorieListByUserId($userdata['ID'], $row['ID']);
+          $subcategories = getSubCategorieListByUserId($userdata[FIELD_ID], $row[FIELD_ID]);
 
           foreach ($subcategories as $subrow) {
             echo '<li style="padding-left:15px;">';
             echo '  <div class="subcategory-entry">';
-            echo '    <div class="category-name cat-short two"><i style="color: ' . $subrow['COLOR'] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="main.php?cat=' . $subrow['ID'] . '" onclick="saveScroll();">' . $subrow['NAME'] . '</a></div>';
-            echo '    <div class="category-number">' . getNumberOfBookmarksById($subrow['ID'], $userdata['ID']) . '</div>';
+            echo '    <div class="category-name cat-short two"><i style="color: ' . $subrow[FIELD_COLOR] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="' . DASHBOARD . CAT_URL_PREFIX . $subrow[FIELD_ID] . '" onclick="saveScroll();">' . $subrow[FIELD_NAME] . '</a></div>';
+            echo '    <div class="category-number">' . getNumberOfBookmarksById($subrow[FIELD_ID], $userdata[FIELD_ID]) . '</div>';
             echo '  </div>';
             echo '</li>';
 
-            $subsubcategories = getSubCategorieListByUserId($userdata['ID'], $subrow['ID']);
+            $subsubcategories = getSubCategorieListByUserId($userdata[FIELD_ID], $subrow[FIELD_ID]);
 
             foreach ($subsubcategories as $subsubrow) {
               echo '<li style="padding-left:30px;">';
               echo '  <div class="subsubcategory-entry">';
-              echo '    <div class="category-name cat-short three"><i style="color: ' . $subsubrow['COLOR'] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="main.php?cat=' . $subsubrow['ID'] . '">' . $subsubrow['NAME'] . '</a></div>';
-              echo '    <div class="category-number">' . getNumberOfBookmarksById($subsubrow['ID'], $userdata['ID']) . '</div>';
+              echo '    <div class="category-name cat-short three"><i style="color: ' . $subsubrow[FIELD_COLOR] . '; padding-right:5px;" class="fa-solid fa-square"></i> <a href="' . DASHBOARD . CAT_URL_PREFIX . $subsubrow[FIELD_ID] . '" onclick="saveScroll();">' . $subsubrow[FIELD_NAME] . '</a></div>';
+              echo '    <div class="category-number">' . getNumberOfBookmarksById($subsubrow[FIELD_ID], $userdata[FIELD_ID]) . '</div>';
               echo '  </div>';
               echo '</li>';
             }
@@ -320,42 +237,42 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
     $categoriyName = 'Default';
     $categoryId = 0;
 
-    if (!empty($_GET['cat']) && is_numeric($_GET['cat'])) {
-      $categoryId = $_GET['cat'];
-      Logger::trace("main(): POST cat=" . $categoryId);
+    if (!empty($_GET[GET_CAT]) && is_numeric($_GET[GET_CAT])) {
+      $categoryId = $_GET[GET_CAT];
+      Logger::trace("GET cat=" . $categoryId);
     } else {
-      Logger::trace("main(): Keine Kategorie-ID uebergeben, setze Default-Wert: 0");
+      Logger::trace("Keine Kategorie-ID uebergeben, setze Default-Wert: 0");
     }
 
     if ($categoryId != 0) {
-      $name = getCategoryNameById($categoryId, $userdata['ID']);
+      $name = getCategoryNameById($categoryId, $userdata[FIELD_ID]);
 
       if (!empty($name)) {
         $categoriyName = $name;
       } else {
-        Logger::trace("main(): Falsche Kategorie-ID, Default wird zurueckgegeben");
+        Logger::trace("Falsche Kategorie-ID, Default wird zurueckgegeben");
       }
     }
 
-    Logger::trace("main(): CategoryName=" . $categoriyName);
+    Logger::trace("CategoryName=" . $categoriyName);
 
     echo '<div class="category-main-title"><i class="fa-solid fa-align-justify"></i> ' . $categoriyName . '</div>';
     ?>
 
-    <form name="delete-category-form" action="main.php" method="post">
-      <input type="hidden" id="delete-category-catid" name="delete-category-catid" value="<?php echo $categoryId;?>">
-      <input type="hidden" id="delete-category-userid" name="delete-category-userid" value="<?php echo $userdata['ID'];?>">
-      <button type="submit" class="delete-category" style="<?php echo !isset($categoryId) || $categoryId == "0" || $categoryId == 0 ? 'display:none;' : '' ;?>" title="INFO: Alle Bookmarks der gelöschten Kategorie werden der Default-Kategorie zugewiesen!"><i class="fa-solid fa-trash-can"></i></button>
+    <form name="delete-category-form" action="<?=DASHBOARD;?>" method="post">
+      <input type="hidden" id="delete-category-catid" name="delete-category-catid" value="<?=$categoryId;?>">
+      <input type="hidden" id="delete-category-userid" name="delete-category-userid" value="<?=$userdata[FIELD_ID];?>">
+      <button type="submit" class="delete-category" style="<?=!isset($categoryId) || $categoryId == "0" || $categoryId == 0 ? 'display:none;' : '' ;?>" title="INFO: Alle Bookmarks der gelöschten Kategorie werden der Default-Kategorie zugewiesen!"><i class="fa-solid fa-trash-can"></i></button>
     </form>
 
     <input type="text" onkeydown="focusFirstEntry(event, this);closeAndDeleteSearchData(event);" id="search" placeholder="Alle Bookmarks durchsuchen [ALT + W] ...">
-    <button class="deleteSearchBoxIcon" onclick="deleteSearchData();"><i class="fa-solid fa-trash-can"></i></button>
+    <button class="deleteSearchBoxIcon" onclick="deleteSearchData();" title="Eingabe löschen"><i class="fa-solid fa-trash-can"></i></button>
     <div id="search-results" style="display:none;" onkeydown="fucusNextEntry(event);"></div>
 
     <div class="user-panel">
       <div class="user-icon-box">
         <div class="user-icon"><i class="fa-solid fa-user"></i></div>
-        <div class="user-welcome-text">Hallo, <?php echo $userdata['NAME'];?>!</div>
+        <div class="user-welcome-text">Hallo, <?=$userdata[FIELD_NAME];?>!</div>
       </div>
     </div>
 
@@ -365,49 +282,49 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
     <?php
     $categoryId = 0;
 
-    if (!empty($_GET['cat']) && is_numeric($_GET['cat'])) {
-      $categoryId = $_GET['cat'];
-      Logger::trace("main(): POST cat=" . $categoryId);
+    if (!empty($_GET[GET_CAT]) && is_numeric($_GET[GET_CAT])) {
+      $categoryId = $_GET[GET_CAT];
+      Logger::trace("GET cat=" . $categoryId);
     } else {
-      Logger::trace("main(): Keine Kategorie-ID uebergeben, setze Default-Wert: 0");
+      Logger::trace("Keine Kategorie-ID uebergeben, setze Default-Wert: 0");
     }
 
-    $bookmarks = getBookmarksByCategoryId($categoryId, $userdata['ID']);
+    $bookmarks = getBookmarksByCategoryId($categoryId, $userdata[FIELD_ID]);
 
     if (!empty($bookmarks)) {
       foreach ($bookmarks as $bookmark) {
 
         $tags = '';
 
-        if (!empty($bookmark['TAGS'])) {
-          $bookmarkTags = explode(",", $bookmark['TAGS']);
+        if (!empty($bookmark[FIELD_TAGS])) {
+          $bookmarkTags = explode(",", $bookmark[FIELD_TAGS]);
           foreach ($bookmarkTags as $tag) {
             $tags .= '#' . $tag . ' ';
           }
         }
 
         echo '<li class="bookmark-link-entry">';
-        echo '<a href="' . $bookmark['URL'] . '" target="' . $basetarget . '">';
+        echo '<a href="' . $bookmark[FIELD_URL] . '" target="' . $basetarget . '">';
         echo '  <div class="bookmark-box">';
         echo '    <div class="bookmark-name truncated">';
-        getFaviconFromUrl($bookmark['URL'], $userdata['ID']);
-        echo '      ' . (empty(trim($bookmark['NAME'])) ? $bookmark['URL'] : $bookmark['NAME']);
+        getFaviconFromUrl($bookmark[FIELD_URL], $userdata[FIELD_ID]);
+        echo '      ' . (empty(trim($bookmark[FIELD_NAME])) ? $bookmark[FIELD_URL] : $bookmark[FIELD_NAME]);
         echo '    </div>';
         echo '    <div class="bookmark-url">';
-        echo '      <small><i>' . $bookmark['URL'] . '</i></small>';
+        echo '      <small><i>' . $bookmark[FIELD_URL] . '</i></small>';
         echo '    </div>';
         echo '    <div class="bookmark-tags">';
         echo '      <small><i>' . $tags . '</i></small>';
         echo '    </div>';
         echo '  </div>';
         echo '</a>';
-        $cat_name = getCategoryNameById($categoryId, $userdata['ID']);
-        $cat_link = categoryExists($cat_name, $userdata['ID']) ? '?cat=' . $categoryId : '';
-        echo '<form id="delete" action="main.php' . $cat_link . '" method="post">';
+        $cat_name = getCategoryNameById($categoryId, $userdata[FIELD_ID]);
+        $cat_link = categoryExists($cat_name, $userdata[FIELD_ID]) ? CAT_URL_PREFIX . $categoryId : '';
+        echo '<form id="delete" action="'. DASHBOARD . $cat_link . '" method="post">';
         echo '<button class="delete-bookmark" title="Bookmark löschen">';
-        echo '<input type="hidden" name="delete_bookmark_bookmarkid" id="delete_bookmark_bookmarkid" value="' . $bookmark['ID'] . '">';
+        echo '<input type="hidden" name="delete_bookmark_bookmarkid" id="delete_bookmark_bookmarkid" value="' . $bookmark[FIELD_ID] . '">';
         echo '<input type="hidden" name="delete_bookmark_catid" id="delete_bookmark_catid" value="' . $categoryId . '">';
-        echo '<input type="hidden" name="delete_bookmark_userid" id="delete_bookmark_userid" value="' . $userdata['ID'] . '">';
+        echo '<input type="hidden" name="delete_bookmark_userid" id="delete_bookmark_userid" value="' . $userdata[FIELD_ID] . '">';
         echo '<i class="fa-solid fa-trash-can"></i>';
         echo '</button>';
         echo '</form>';
@@ -415,7 +332,10 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
 
       }
     } else {
-      echo '<li class="no-items"><i class="fa-solid fa-not-equal"></i> Keine Bookmarks in dieser Kategorie vorhanden.<br/><small>Du hast in dieser Kategorie noch keine Bookmarks gespeichert.<br/>Klicke <a style="cursor: pointer" onclick="showAddBookmarkModal();"><b>hier</b></a> um ein neues Bookmark dieser Katergorie hinzuzuf&uuml;gen</small></li>';
+      echo '<li class="no-items"><i class="fa-solid fa-not-equal"></i> ' . NO_BOOKMARKS_IN_CATEGORY_HEADLINE . '<br/>
+            <small>Du hast in dieser Kategorie noch keine Bookmarks gespeichert.<br/>Klicke
+            <a style="cursor: pointer" onclick="showAddBookmarkModal();"><b>hier</b></a>
+            um ein neues Bookmark dieser Katergorie hinzuzuf&uuml;gen</small></li>';
     }
     ?>
     </ul>
@@ -426,36 +346,41 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
       </div>
     </div>
 
-    <?php include('includes/footer.inc.php');?>
+    <?php include_once('includes/footer.inc.php');?>
   </div>
 </div>
 
   <?php
-  if ("1" === getParameter(SHOW_UPLOAD_TAB, $userdata['ID'])) {
-    include('includes/uploadwindow.php');
-  }?>
+  if ("1" === getParameter(SHOW_UPLOAD_TAB, $userdata[FIELD_ID])) {
+    include_once('includes/uploadwindow.php');
+  }
 
-  <?php include('includes/addcategory.php');?>
+  if ("1" === getParameter(SHOW_BOOKMARKLET_TAB, $userdata[FIELD_ID])) {
+    include_once('includes/bookmarkletwindow.php');
+  }
+  ?>
+
+  <?php include_once('includes/addcategory.php');?>
 
 <div id="bookmark-modal">
   <div class="modal-header">
-    <div class="modal-headline">Bookmark hinzuf&uuml;gen</div>
+    <div class="modal-headline"><?=BOOKMARK_HINZUFUEGEN;?></div>
     <div class="modal-close" title="Schließen"><a onclick="hideAddBookmarkModal();">X</a></div>
   </div>
   <div class="modal-content">
 
     <?php if ($categoryId > 0) {
-      echo '<form action="main.php?cat=' . $categoryId . '" method="post">';
+      echo '<form action="' . DASHBOARD . CAT_URL_PREFIX . $categoryId . '" method="post">';
     } else {
-      echo '<form action="main.php" method="post">';
+      echo '<form action="' . DASHBOARD . '" method="post">';
     }?>
 
-    <input type="hidden" name="catid" id="catid" value="<?php echo $categoryId;?>">
-    <input type="hidden" name="userid" id="userid" value="<?php echo $userdata['ID'];?>">
+    <input type="hidden" name="catid" id="catid" value="<?=$categoryId;?>">
+    <input type="hidden" name="userid" id="userid" value="<?=$userdata[FIELD_ID];?>">
     <div class="container">
       <div class="row">
         <div class="col">
-          <label for="name">Name:</label>
+          <label for="name"><?=NAME;?>:</label>
         </div>
         <div class="col">
           <input autocomplete="off" type="text" name="name" id="name" onkeydown="validateNewBookmark(this.id);" placeholder="Meine coole Seite"/>
@@ -463,7 +388,7 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
       </div>
       <div class="row">
         <div class="col">
-          <label for="url">URL:</label>
+          <label for="url"><?=URL;?>:</label>
         </div>
         <div class="col">
           <input autocomplete="off" type="text" name="url" id="url" onkeydown="validateNewBookmark(this.id);" placeholder="https://google.de"/>
@@ -471,18 +396,18 @@ $basetarget = getParameter(BASETARGET, $userdata['ID']);
       </div>
       <div class="row">
         <div class="col">
-          <label for="tags">Tags:</label>
+          <label for="tags"><?=TAGS;?>>:</label>
         </div>
         <div class="col">
           <input type="text" name="tags" id="tags" placeholder="suchen,musik"/>
         </div>
       </div>
       <div class="submit-cancel-panel">
-        <span class="btn btn-cancel" id="cancel" onclick="hideAddBookmarkModal();" title="Abbrechen">Abbrechen</span>
-        <button class="btn btn-submit" disabled="disabled" type="submit" id="submitNewBookmark" title="Bookmark hinzufügen">Hinzufügen</button>
+        <span class="btn btn-cancel" id="cancel" onclick="hideAddBookmarkModal();" title="Abbrechen"><?=ABBRECHEN;?></span>
+        <button class="btn btn-submit" disabled="disabled" type="submit" id="submitNewBookmark" title="Bookmark hinzufügen"><?=HINZUFUEGEN;?></button>
       </div>
     </div>
-    <?php echo '</form>';?>
+    <?='</form>';?>
 
   </div>
 </div>
