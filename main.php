@@ -106,7 +106,7 @@ if (isset($_GET[GET_CATEGORY]) && isset($_GET[GET_COLOR])) {
 
   Logger::trace("Kategorie hinzufügen geklickt. CATEGORY=" . $categoryname . ' COLOR=' . $color . ' PARENTID=' . $parentcategoryid);
 
-  if (validateCategory($categoryname, $userdata[FIELD_ID]) && validateColor($color)) {
+  if (validateCategory($parentcategoryid, $categoryname, $userdata[FIELD_ID]) && validateColor($color)) {
     if (addNewCategory($categoryname, $color, $userdata[FIELD_ID], $parentcategoryid)) {
       showInfo(ADD_CATEGORY_SUCCESS);
     } else {
