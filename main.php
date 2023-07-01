@@ -55,7 +55,7 @@ if (isset($_POST[POST_SUBMIT])) {
       });
 
       setTimeout(function() {
-          let alert = document.getElementById('alert');
+          let alert = $('#alert');
           if (alert) {
               alert.fadeOut('fast');
           }
@@ -106,7 +106,7 @@ if (isset($_GET[GET_CATEGORY]) && isset($_GET[GET_COLOR])) {
 
   Logger::trace("Kategorie hinzufügen geklickt. CATEGORY=" . $categoryname . ' COLOR=' . $color . ' PARENTID=' . $parentcategoryid);
 
-  if (validateCategory($categoryname, $userdata[FIELD_ID]) && validateColor($color)) {
+  if (validateCategory($parentcategoryid, $categoryname, $userdata[FIELD_ID]) && validateColor($color)) {
     if (addNewCategory($categoryname, $color, $userdata[FIELD_ID], $parentcategoryid)) {
       showInfo(ADD_CATEGORY_SUCCESS);
     } else {

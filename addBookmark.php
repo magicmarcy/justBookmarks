@@ -54,8 +54,8 @@ if (isset($_GET[GET_URL])) {
   Logger::trace("GET->url: " . $url);
 }
 
-$categories = getCategorieListByUserId($userdata[FIELD_ID], true);
-$categories[] = ['ID' => '0', 'NAME' => 'Default', 'USERID' => $userdata[FIELD_ID], 'COLOR' => '#ff5733'];
+$categories = getCategorieListByUserIdWithParentName($userdata[FIELD_ID]);
+$categories[] = ['ID' => '0', 'NAME' => 'Default', 'USERID' => $userdata[FIELD_ID], 'COLOR' => '#ff5733', 'PARENT_NAME' => ''];
 
 $sorted = array_column($categories, FIELD_NAME);
 array_multisort($sorted, SORT_ASC, $categories);
@@ -209,7 +209,8 @@ array_multisort($sorted, SORT_ASC, $categories);
             <select id="categoryid" name="categoryid" class="cat-dropdown">
               <?php
               foreach ($categories as $cat) {
-                echo '<option value="' . $cat[FIELD_ID] . '">' . $cat[FIELD_NAME] . '</option>';
+                $parentName = $cat['PARENT_NAME'] != '' ? ' (' . $cat['PARENT_NAME'] . ')' : '';
+                echo '<option value="' . $cat[FIELD_ID] . '">' . $cat[FIELD_NAME] . $parentName . '</option>';
               }?>
             </select>
           </div>
