@@ -55,7 +55,7 @@ if (isset($_POST[POST_SUBMIT])) {
       });
 
       setTimeout(function() {
-          let alert = document.getElementById('alert');
+          let alert = $('#alert');
           if (alert) {
               alert.fadeOut('fast');
           }
