@@ -46,6 +46,51 @@ function getCategorieListByUserId($userid, $withsubs): array
   return Logger::traceExitData($categories);
 }
 
+function getCategorieListByUserIdWithParentName($userid): array
+{
+  Logger::traceEntryData($userid);
+
+  $categories = [];
+
+  if (!isset($userid)) {
+    Logger::error('Keine User-ID erhalten!');
+    return $categories;
+  }
+
+  $db = new PDO(PROJECT_DATABASE) or die (FAILED_OPEN_DB);
+
+  $sql = "SELECT c.ID, c.NAME, c.USERID, c.COLOR, c.PARENT, 
+          CASE WHEN c.PARENT > 0 THEN p.NAME ELSE '' END AS PARENT_NAME
+          FROM CATEGORY c
+          LEFT JOIN CATEGORY p ON c.PARENT = p.ID
+          WHERE c.USERID = :id;
+          ORDER BY c.NAME";
+
+  $stmt = $db -> prepare($sql);
+  $stmt -> bindParam(PARAM_ID, $userid);
+
+  Logger::sql($sql);
+
+  $stmt -> execute();
+  $res = $stmt -> fetchAll(PDO::FETCH_ASSOC);
+
+  foreach ($res as $row) {
+    $categories[] = ['ID' => $row[FIELD_ID], 'NAME' => $row[FIELD_NAME], 'USERID' => $row[FIELD_USERID], 'COLOR' => $row[FIELD_COLOR], 'PARENT' => $row[FIELD_PARENT], 'PARENT_NAME' => $row['PARENT_NAME']];
+
+    Logger::trace('Datensatz erzeugt: ' . json_encode($row));
+  }
+
+  if (empty($categories)) {
+    Logger::warn(NO_RECORDS_FOUND);
+  } else {
+    Logger::trace(formatString(RECORDS_FOUND, [sizeof($categories)]));
+  }
+
+  $db = null;
+
+  return Logger::traceExitData($categories);
+}
+
 function getSubCategorieListByUserId($userid, $categoryid): array
 {
   Logger::traceEntryData('UserId=' . $userid . ' CategoryId=' . $categoryid);
@@ -393,32 +438,57 @@ function categoryExists($categoryName, $userid): bool
   return Logger::traceExitData($categoryExists);
 }
 
-
-function validateCategory($category, $userid): bool
+/**
+ * Checks if the parent category you want to add your new category already has a subcategory with this name
+ */
+function hasSameParent($parentCategoryId, $newCategoryName, $userId): bool
 {
-  Logger::traceEntryData("CATEGORY=" . $category, 'USERID=' . $userid);
+  Logger::traceEntryData("ParentCategoryId=" . $parentCategoryId, "NewCategoryName=" . $newCategoryName, "UserId=" . $userId);
 
-  if (trim($category) == '') {
+  $category = getSubCategorieListByUserId($userId, $parentCategoryId);
+  Logger::trace("Number of all subcategories: " . sizeof($category));
+
+  if ($category == null) {
+    Logger::trace("Keine Kategorie gefunden");
+    return Logger::traceExitData(false);
+  }
+
+  foreach ($category as $cat) {
+    if ($cat[FIELD_NAME] == $newCategoryName) {
+      Logger::trace("Kategorie mit dem Namen '" . $newCategoryName . "' existiert bereits in der Elternkategorie!");
+      return Logger::traceExitData(true);
+    }
+  }
+
+  return Logger::traceExitData(false);
+}
+
+
+function validateCategory($parentCatregoryId, $newCategoryName, $userid): bool
+{
+  Logger::traceEntryData("PARENT-CATEGORY-ID=" . $parentCatregoryId, "CATEGORY=" . $newCategoryName, 'USERID=' . $userid);
+
+  if (trim($newCategoryName) == '') {
     Logger::trace("Kategorie darf nicht leer sein!");
     showError('Du musst einen Kategorienamen angeben!');
     return Logger::traceExitData(false);
 
-  } elseif (hasForbiddenCharsInCategoryname($category)) {
+  } elseif (hasForbiddenCharsInCategoryname($newCategoryName)) {
     Logger::trace("Verbotene Zeichen enthalten");
     showError('Der Kategoriename darf keine Sonderzeichen enthalten!');
     return Logger::traceExitData(false);
 
-  } elseif (strlen($category) > CAT_MAX_CHARS) {
+  } elseif (strlen($newCategoryName) > CAT_MAX_CHARS) {
     Logger::trace("Kategoriename ist zu lang! +++ Achtung! +++ Vermutlich Request-Manipulation!!!!");
     showError('Der Kategoriename darf nur ' . CAT_MAX_CHARS . ' Zeichen enthalten!');
     return Logger::traceExitData(false);
 
-  } elseif (strtolower($category) == 'default') {
+  } elseif (strtolower($newCategoryName) == 'default') {
     Logger::trace("Kategorie darf nicht default heissen!");
     showError('Du kannst keine weitere Kategorie mit dem Namen "Default" anlegen!');
     return Logger::traceExitData(false);
 
-  } elseif (categoryExists($category, $userid)) {
+  } elseif (hasSameParent($parentCatregoryId, $newCategoryName, $userid)) {
     Logger::trace("Kategorie existiert bereits");
     showError('Kategorie existiert bereits!');
     return Logger::traceExitData(false);
